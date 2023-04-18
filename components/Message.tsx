@@ -6,8 +6,8 @@ interface MessageProps {
 }
 
 const Message: React.FC<MessageProps> = ({ message, isInterim }) => {
-    const bgColor = isInterim ? 'bg-green-200' : 'bg-green-500';
-    const textColor = isInterim ? 'text-green-800' : 'text-white';
+    const bgColor = isInterim ? 'bg-slate-300' : 'bg-green-500';
+    const textColor = isInterim ? 'text-black' : 'text-white';
 
     return (
         <div className="text-right">
