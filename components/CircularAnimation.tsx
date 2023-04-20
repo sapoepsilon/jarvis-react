@@ -14,8 +14,8 @@ const CircularAnimation: React.FC<CircularAnimationProps> = ({
                                                                  value,
                                                                  children,
                                                              }) => {
-    const defaultWaveSize = 1000;
-    const waveSize = value === 0 ? defaultWaveSize : size * value * 0.1 * 2;
+    const defaultWaveSize = 0;
+    const waveSize = value === 0 ? defaultWaveSize : size * value * 0.2 * 2;
 
     return (
         <div className="relative">
@@ -29,7 +29,7 @@ const CircularAnimation: React.FC<CircularAnimationProps> = ({
                 }}
             >
                 <div
-                    className={`w-${size} h-${size} rounded-full border-2`}
+                    className={`w-${size} h-${size} rounded-full border-2 pointer-events-none`}
                     style={{
                         borderColor: waveColor,
                     }}

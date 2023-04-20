@@ -1,6 +1,4 @@
 import React from "react";
-import VoiceVisualizer from "@/components/CircularAnimation";
-import CircularAnimation from "@/components/CircularAnimation";
 import VoiceRecognitionAnimation from "@/components/CircularAnimation";
 
 const MicrophoneButton = ({
@@ -33,9 +31,9 @@ const MicrophoneButton = ({
                 value={isListening ? voiceValue : 0}
             >
                 <button
-                    className={`w-16 h-16 rounded-full focus:outline-none select-none ${
-                        isListening ? 'bg-red-600' : 'bg-gray-600'
-                    }`}
+                    className={`px-9 py-3 rounded-full focus:outline-none select-none ${
+                        isListening ? 'bg-red-600' : 'hover:bg-blue-300 bg-gray-600'
+                    } `}
                     onMouseDown={onMouseDown}
                     onMouseUp={onMouseUp}
                     onTouchStart={handleTouchStart}

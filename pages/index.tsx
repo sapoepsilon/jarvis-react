@@ -3,9 +3,6 @@ import MessageList from '../components/MessageList';
 import MicrophoneButton from '../components/MicrophoneButton';
 import SendButton from '../components/SendButton';
 import 'tailwindcss/tailwind.css';
-import {isLineTerminator} from "sucrase/dist/types/parser/traverser/util";
-import ClearButton from "@/components/ClearButton";
-import VoiceVisualizer from "@/components/CircularAnimation";
 import useMicrophoneVolume from "@/hooks/useMicrophoneVolume";
 
 const Home: React.FC = () => {
@@ -52,8 +49,6 @@ const Home: React.FC = () => {
                     eachTranscript = '';
 
                 };
-
-
                 recognitionRef.current.onend = () => {
                     console.log("recognition ended");
                     setIsListening(false);
@@ -85,14 +80,19 @@ const Home: React.FC = () => {
 
     const handleMouseUp = () => {
         if (recognitionRef.current) {
-            setIsListening(false);
             recognitionRef.current.stop();
+            setIsListening(false);
+            {
+                handleSendClick();
+                handleClearClick();
+            }
         }
     };
 
     const handleClearClick = () => {
         setTranscript('');
-        setMessages([]);
+        console.log("transcript cleared" + transcript);
+        setTranscript('');
     };
 
     const handleSendClick = () => {
@@ -109,20 +109,19 @@ const Home: React.FC = () => {
             <div className="mb-5 w-full max-w-2xl">
                 <MessageList messages={messages} interimTranscript={transcript} />
             </div>
-            <div className="flex flex-wrap items-center w-full max-w-2xl">
-
-                <button
-                    className="bg-red-500 text-white px-3 py-2 focus:outline-none"
-                    onClick={() => setTranscript('')}
-                >
-                    Clear
-                </button>
+            <div className="flex flex-wrap justify-between items-center w-full max-w-2xl space-x-4">
                 <SendButton onClick={() => handleSendClick()} />
                 <MicrophoneButton
                     isListening={isListening}
                     onMouseDown={handleMouseDown}
                     onMouseUp={handleMouseUp}
-                 voiceValue={value}/>
+                    voiceValue={value}/>
+                <button
+                    className="bg-red-500 text-white px-3 py-3 rounded focus:outline-none"
+                    onClick={() => handleClearClick()}
+                >
+                    Clear
+                </button>
             </div>
         </div>
     );
