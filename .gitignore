@@ -99,6 +99,8 @@ atlassian-ide-plugin.xml
 certificates/localhost.key
 certificates/localhost.crt
 
+.env.local
+
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
 crashlytics.properties

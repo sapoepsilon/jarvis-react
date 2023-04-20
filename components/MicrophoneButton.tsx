@@ -1,5 +1,6 @@
 import React from "react";
 import VoiceRecognitionAnimation from "@/components/CircularAnimation";
+import CircularAnimation from "@/components/CircularAnimation";
 
 const MicrophoneButton = ({
                               voiceValue,
@@ -25,7 +26,7 @@ const MicrophoneButton = ({
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <VoiceRecognitionAnimation
+            <CircularAnimation
                 size={200}
                 waveColor="#4B5563"
                 value={isListening ? voiceValue : 0}
@@ -42,7 +43,7 @@ const MicrophoneButton = ({
                 >
                     🎤
                 </button>
-            </VoiceRecognitionAnimation>
+            </CircularAnimation>
         </div>
     );
 };

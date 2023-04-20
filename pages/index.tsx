@@ -4,6 +4,7 @@ import MicrophoneButton from '../components/MicrophoneButton';
 import SendButton from '../components/SendButton';
 import 'tailwindcss/tailwind.css';
 import useMicrophoneVolume from "@/hooks/useMicrophoneVolume";
+import ScrollableView from "@/components/ScrollableView";
 
 const Home: React.FC = () => {
     const [isListening, setIsListening] = useState<boolean>(false);
@@ -38,7 +39,7 @@ const Home: React.FC = () => {
                                 setTranscript(interimTranscript);
                             }
                         } else {
-                            if (!isSamsungBrowser || (isSamsungBrowser && i === event.results.length - 1)) {
+                            if (isSamsungBrowser || (isSamsungBrowser && i === event.results.length - 1)) {
                                 setTranscript(transcript);
                             } else {
                                 eachTranscript += transcript;
@@ -52,6 +53,7 @@ const Home: React.FC = () => {
                 recognitionRef.current.onend = () => {
                     console.log("recognition ended");
                     setIsListening(false);
+                    setTranscript('');
                 };
             }
 
@@ -80,12 +82,9 @@ const Home: React.FC = () => {
 
     const handleMouseUp = () => {
         if (recognitionRef.current) {
-            recognitionRef.current.stop();
             setIsListening(false);
-            {
-                handleSendClick();
-                handleClearClick();
-            }
+            recognitionRef.current.stop();
+            handleSendClick();
         }
     };
 
@@ -98,19 +97,39 @@ const Home: React.FC = () => {
     const handleSendClick = () => {
         console.log("clicked send button")
         if (transcript.trim()) {
+            handleSubmit(transcript).then(r => console.log(r));
             setMessages((prevMessages) => [...prevMessages, transcript]);
             setTranscript('');
+        }
+    };
+
+    const handleSubmit = async (request: String) => {
+        const res = await fetch("/api/chatgpt", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ prompt: transcript }),
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            alert(data.data.choices[0].text);
+        } else {
+            console.error("Error fetching ChatGPT response");
         }
     };
 
     typeof navigator !== 'undefined' && Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     return (
         <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 px-4">
-            <div className="mb-5 w-full max-w-2xl">
-                <MessageList messages={messages} interimTranscript={transcript} />
-            </div>
+            <ScrollableView>
+                <div className="mb-5 w-full max-w-2xl">
+                    <MessageList messages={messages} interimTranscript={transcript}/>
+                </div>
+            </ScrollableView>
             <div className="flex flex-wrap justify-between items-center w-full max-w-2xl space-x-4">
-                <SendButton onClick={() => handleSendClick()} />
+                <SendButton onClick={() => handleSendClick()}/>
                 <MicrophoneButton
                     isListening={isListening}
                     onMouseDown={handleMouseDown}
