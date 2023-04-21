@@ -8,13 +8,14 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                'jarvis-background': '#B4D6EA',
+                'jarvis-background': '#C8D9EB',
             },
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
                 'gradient-conic':
                     'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
             },
+
         },
     },
     plugins: [],

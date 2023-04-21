@@ -1,15 +1,18 @@
 import React, {useState, useEffect, useRef} from 'react';
-import MessageList from '../components/MessageList';
 import MicrophoneButton from '../components/MicrophoneButton';
 import SendButton from '../components/SendButton';
 import 'tailwindcss/tailwind.css';
 import useMicrophoneVolume from "@/hooks/useMicrophoneVolume";
 import ScrollableView from "@/components/ScrollableView";
+import chatGPT from "@/pages/api/chatGPT";
+import MessageList from "@/components/MessageList";
+import {MessageInterface} from "../interfaces/Message";
+import {elevenlabs_getVoices, elevenlabs_request} from "@/pages/api/elevenlabs";
 
 const Home: React.FC = () => {
     const [isListening, setIsListening] = useState<boolean>(false);
     const [transcript, setTranscript] = useState<string>('');
-    const [messages, setMessages] = useState<string[]>([]);
+    const [messages, setMessages] = useState<MessageInterface[]>([]);
     const [isSupported, setIsSupported] = useState<boolean>(true);
     const recognitionRef = useRef<SpeechRecognition | null>(null);
     const value = useMicrophoneVolume();
@@ -97,34 +100,38 @@ const Home: React.FC = () => {
     const handleSendClick = () => {
         console.log("clicked send button")
         if (transcript.trim()) {
-            handleSubmit(transcript).then(r => console.log(r));
-            setMessages((prevMessages) => [...prevMessages, transcript]);
+            const userMessage: MessageInterface = createMessage(transcript, true, false);
+            setMessages((prevMessages) => [...prevMessages, userMessage]);
+            handleSubmit().then(r => console.log(r));
             setTranscript('');
         }
     };
 
-    const handleSubmit = async (request: String) => {
-        const res = await fetch("/api/chatgpt", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ prompt: transcript }),
-        });
-
-        if (res.ok) {
-            const data = await res.json();
-            alert(data.data.choices[0].text);
-        } else {
-            console.error("Error fetching ChatGPT response");
-        }
+    const handleSubmit = async () => {
+        if (!transcript) return;
+        const gptResponse = await chatGPT(transcript);
+        // @ts-ignore
+        const gptMessage: MessageInterface = createMessage(gptResponse.content, false, false);
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            gptMessage
+        ]);
+        // @ts-ignore
+        await elevenlabs_request(gptResponse.content, "yoZ06aMxZJJ28mfd3POQ");
     };
 
+    function createMessage(text: string, isMe: boolean, isInterim: boolean): MessageInterface {
+        return {
+            text,
+            isMe,
+            isInterim
+        }
+    }
     typeof navigator !== 'undefined' && Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     return (
         <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 px-4">
             <ScrollableView>
-                <div className="mb-5 w-full max-w-2xl">
+                <div className="mb-5 w-full">
                     <MessageList messages={messages} interimTranscript={transcript}/>
                 </div>
             </ScrollableView>

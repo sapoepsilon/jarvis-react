@@ -25,7 +25,7 @@ const MicrophoneButton = ({
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="flex items-center justify-center bg-gray-100">
             <CircularAnimation
                 size={200}
                 waveColor="#4B5563"

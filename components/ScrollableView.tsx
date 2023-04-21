@@ -15,7 +15,7 @@ const ScrollableView: React.FC<ScrollableViewProps> = ({children}) => {
     return (
         <div
             ref={scrollRef}
-            className="bg-jarvis-background w-screen h-[40vh] overflow-y-scroll flex flex-col items-end p-4">
+            className="bg-jarvis-background w-screen h-[80vh] overflow-y-scroll flex flex-col items-end p-4">
             {children}
         </div>
     );
