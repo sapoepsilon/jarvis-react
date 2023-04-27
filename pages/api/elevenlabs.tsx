@@ -7,13 +7,13 @@ export async function elevenlabs_request(inputText: string, voice_id: string) {
         'Content-Type': 'application/json',
     });
 
-    const sentences = inputText.split('.');
+    const sentences = processText(inputText);
     const audioBuffers: ArrayBuffer[] = [];
-
+    let sentenceNumber = 0;
     for (const sentence of sentences) {
         if (sentence.trim() !== '') {
             const response = await fetch(
-                'https://api.elevenlabs.io/v1/text-to-speech/'+ voice_id + '/stream',
+                'https://api.elevenlabs.io/v1/text-to-speech/' + voice_id,
                 {
                     method: 'POST',
                     headers: headers,
@@ -26,15 +26,18 @@ export async function elevenlabs_request(inputText: string, voice_id: string) {
                     }),
                 }
             );
-
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 console.log("response ok: " + sentence);
             }
-
             const buffer = await response.arrayBuffer();
-            audioBuffers.push(buffer);
+            if (sentenceNumber == 0) {
+                await playAudio(buffer);
+            } else {
+                audioBuffers.push(buffer);
+            }
+            sentenceNumber += 1;
         }
     }
 
@@ -43,6 +46,43 @@ export async function elevenlabs_request(inputText: string, voice_id: string) {
         await playAudio(buffer);
     }
 }
+
+function processText(text: string): string[] {
+    const rawSentences = text.split(".");
+    const processedSentences: string[] = [];
+
+    let buffer = "";
+
+    for (let i = 0; i < rawSentences.length; i++) {
+        const sentence = rawSentences[i].trim();
+
+        if (buffer) {
+            const combinedSentence = `${buffer}. ${sentence}`;
+            buffer = "";
+
+            if (combinedSentence.split(" ").length < 3) {
+                buffer = combinedSentence;
+                continue;
+            }
+
+            processedSentences.push(combinedSentence);
+        } else {
+            if (sentence.split(" ").length < 3) {
+                buffer = sentence;
+                continue;
+            }
+
+            processedSentences.push(sentence);
+        }
+    }
+
+    if (buffer) {
+        processedSentences.push(buffer);
+    }
+
+    return processedSentences;
+}
+
 
 async function playAudio(buffer: ArrayBuffer) {
     const AudioContext = (window.AudioContext || (window as any).webkitAudioContext) as typeof window.AudioContext;
