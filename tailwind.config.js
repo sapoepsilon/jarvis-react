@@ -9,6 +9,7 @@ module.exports = {
         extend: {
             colors: {
                 'jarvis-background': '#C8D9EB',
+                'app-background': '#F5F5F5',
             },
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

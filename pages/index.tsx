@@ -117,7 +117,7 @@ const Home: React.FC = () => {
             gptMessage
         ]);
         // @ts-ignore
-        await elevenlabs_request(gptResponse.content, "yoZ06aMxZJJ28mfd3POQ");
+        await elevenlabs_request(gptResponse.content, "PjOz2N4u2h6AEZecKtW6");
     };
 
     function createMessage(text: string, isMe: boolean, isInterim: boolean): MessageInterface {
@@ -129,7 +129,7 @@ const Home: React.FC = () => {
     }
     typeof navigator !== 'undefined' && Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     return (
-        <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 px-4">
+        <div className="flex flex-col justify-center items-center min-h-screen bg-app-background px-4 min-w-200">
             <ScrollableView>
                 <div className="mb-5 w-full">
                     <MessageList messages={messages} interimTranscript={transcript}/>
