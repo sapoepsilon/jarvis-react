@@ -7,14 +7,14 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 const chatGPT = async (input: string) => {
     try {
-        const completion = await openai.createChatCompletion({
-            model: "gpt-3.5-turbo",
-            max_tokens: 64,
-            messages: [{"role": "system", "content": "You are a helpful assistant whose name is Ismatulla Mansurov."},
-                {"role": "user", "content": input}],
+        const completion = await openai.createCompletion({
+            model: "text-davinci-003",
+            temperature: 0.3,
+            max_tokens: 128,
+           prompt: input,
         });
-        console.log(completion.data.choices[0]);
-        return completion.data.choices[0].message;
+        console.log(completion.data.choices[0].text);
+        return completion.data.choices[0].text;
     } catch (error) {
         if (error) {
             console.log(error);

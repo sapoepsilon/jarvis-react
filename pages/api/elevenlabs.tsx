@@ -12,6 +12,7 @@ export async function elevenlabs_request(inputText: string, voice_id: string) {
     let sentenceNumber = 0;
     for (const sentence of sentences) {
         if (sentence.trim() !== '') {
+            console.log("fetche is now on: ");
             const response = await fetch(
                 'https://api.elevenlabs.io/v1/text-to-speech/' + voice_id,
                 {
@@ -19,10 +20,6 @@ export async function elevenlabs_request(inputText: string, voice_id: string) {
                     headers: headers,
                     body: JSON.stringify({
                         text: sentence.trim(),
-                        voice_settings: {
-                            stability: 0,
-                            similarity_boost: 1,
-                        },
                     }),
                 }
             );
@@ -32,8 +29,9 @@ export async function elevenlabs_request(inputText: string, voice_id: string) {
                 console.log("response ok: " + sentence);
             }
             const buffer = await response.arrayBuffer();
+
             if (sentenceNumber == 0) {
-                await playAudio(buffer);
+                playAudio(buffer);
             } else {
                 audioBuffers.push(buffer);
             }
@@ -48,30 +46,26 @@ export async function elevenlabs_request(inputText: string, voice_id: string) {
 }
 
 function processText(text: string): string[] {
+    console.log("processing text: " + text + "");
     const rawSentences = text.split(".");
     const processedSentences: string[] = [];
 
     let buffer = "";
-
     for (let i = 0; i < rawSentences.length; i++) {
         const sentence = rawSentences[i].trim();
-
         if (buffer) {
             const combinedSentence = `${buffer}. ${sentence}`;
             buffer = "";
-
             if (combinedSentence.split(" ").length < 3) {
                 buffer = combinedSentence;
                 continue;
             }
-
             processedSentences.push(combinedSentence);
         } else {
             if (sentence.split(" ").length < 3) {
                 buffer = sentence;
                 continue;
             }
-
             processedSentences.push(sentence);
         }
     }
@@ -98,7 +92,7 @@ async function playAudio(buffer: ArrayBuffer) {
     source.buffer = audioBuffer;
     source.connect(audioContext.destination);
     source.start();
-    await new Promise(resolve => setTimeout(resolve, audioBuffer.duration * 1000));
+    await new Promise(resolve => setTimeout(resolve, audioBuffer.duration * 100));
 }
 
 export async function elevenlabs_getVoices(inputeText: string, voice_id: string) {

@@ -10,7 +10,7 @@ export  interface MessageProps {
 const Message: React.FC<MessageProps> = ({message}) => {
     const {text, isMe, isInterim} = message;
     const messageClass = isMe ? 'text-right' : 'text-left';
-    const bgColor = isMe ? 'bg-blue-400' : isInterim ? 'bg-slate-300' : 'bg-green-500';
+    const bgColor = isMe ? 'bg-user-message' : isInterim ? 'bg-slate-300' : 'bg-gpt-message';
     const textColor = isInterim ? 'text-black' : 'text-white';
 
     return (

@@ -8,6 +8,7 @@ import chatGPT from "@/pages/api/chatGPT";
 import MessageList from "@/components/MessageList";
 import {MessageInterface} from "../interfaces/Message";
 import {elevenlabs_getVoices, elevenlabs_request} from "@/pages/api/elevenlabs";
+import {generateDeviceFingerprint} from "@/hooks/fingerprint";
 
 const Home: React.FC = () => {
     const [isListening, setIsListening] = useState<boolean>(false);
@@ -19,13 +20,16 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-
+        generateDeviceFingerprint().then((fingerprint: string) => {
+            // Use the fingerprint value as needed (e.g., send it to the server)
+            console.log(fingerprint);
+        });
         if (SpeechRecognition) {
             recognitionRef.current = new SpeechRecognition();
 
             if (recognitionRef.current) {
                 recognitionRef.current.continuous = true;
-                recognitionRef.current.interimResults = true;
+                recognitionRef.current.interimResults = false;
 
                 let interimTranscript = '';
                 let eachTranscript = '';
@@ -33,25 +37,16 @@ const Home: React.FC = () => {
                     const isSamsungBrowser = navigator.userAgent.match(/SamsungBrowser/i);
                     for (let i = event.resultIndex; i < event.results.length; i++) {
                         const transcript = event.results[i][0].transcript;
-
                         if (event.results[i].isFinal) {
-                            if (!isSamsungBrowser || (isSamsungBrowser && i === event.results.length - 1)) {
-                                setTranscript(transcript);
-                            } else {
-                                interimTranscript += transcript;
-                                setTranscript(interimTranscript);
-                            }
+                            interimTranscript += transcript;
+                            setTranscript(interimTranscript);
+                            interimTranscript = '';
                         } else {
-                            if (isSamsungBrowser || (isSamsungBrowser && i === event.results.length - 1)) {
-                                setTranscript(transcript);
-                            } else {
-                                eachTranscript += transcript;
-                                setTranscript(interimTranscript + eachTranscript);
-                            }
+                            eachTranscript += transcript;
+                            setTranscript(interimTranscript + eachTranscript);
                         }
                     }
                     eachTranscript = '';
-
                 };
                 recognitionRef.current.onend = () => {
                     console.log("recognition ended");
@@ -111,13 +106,13 @@ const Home: React.FC = () => {
         if (!transcript) return;
         const gptResponse = await chatGPT(transcript);
         // @ts-ignore
-        const gptMessage: MessageInterface = createMessage(gptResponse.content, false, false);
+        const gptMessage: MessageInterface = createMessage(gptResponse, false, false);
         setMessages((prevMessages) => [
             ...prevMessages,
             gptMessage
         ]);
         // @ts-ignore
-        await elevenlabs_request(gptResponse.content, "PjOz2N4u2h6AEZecKtW6");
+        await elevenlabs_request(gptResponse, "PjOz2N4u2h6AEZecKtW6");
     };
 
     function createMessage(text: string, isMe: boolean, isInterim: boolean): MessageInterface {
@@ -127,15 +122,19 @@ const Home: React.FC = () => {
             isInterim
         }
     }
+
     typeof navigator !== 'undefined' && Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     return (
-        <div className="flex flex-col justify-center items-center min-h-screen bg-app-background px-4 min-w-200">
+        <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
             <ScrollableView>
                 <div className="mb-5 w-full">
                     <MessageList messages={messages} interimTranscript={transcript}/>
                 </div>
             </ScrollableView>
-            <div className="flex flex-wrap justify-between items-center w-full max-w-2xl space-x-4">
+            <div className="text-white">
+                {transcript}
+            </div>
+            <div className="flex flex-wrap pt-2 justify-between items-center w-full max-w-2xl space-x-4">
                 <SendButton onClick={() => handleSendClick()}/>
                 <MicrophoneButton
                     isListening={isListening}

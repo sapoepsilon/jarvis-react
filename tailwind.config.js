@@ -8,8 +8,10 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                'jarvis-background': '#C8D9EB',
-                'app-background': '#F5F5F5',
+                'jarvis-background': '#43454A',
+                'app-background': '#2B2D30',
+                'gpt-message': '#262529',
+                'user-message': '#4991F7',
             },
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
