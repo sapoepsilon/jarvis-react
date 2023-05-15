@@ -1,5 +1,5 @@
-export interface Fingerprint {
-    [fingerprint: string]: {
-        [date: string]: number;
-    };
-}
+export type Fingerprint= {
+    fingerprint: string;
+    date: Date;
+    values: number;
+};

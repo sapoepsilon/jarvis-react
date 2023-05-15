@@ -2,18 +2,18 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  messagingSenderId: process.env.messageSenderId,
-  appId: process.env.appId,
-  measurementId: process.env.measurementId,
+    experimentalForceLongPolling: true,
+    useFetchStreams: false,
+    apiKey: "AIzaSyCZ3tzR_8T6qC1Fyx0ec2r29KVTWZ1I7ws",
+    authDomain: "react.firebaseapp.com",
+    projectId:"jarvis-react",
+    storageBucket: "jarvis-react.appspot.com",
+    messagingSenderId: "498376626311",
+    appId: "1:498376626311:web:04f1787c218f3b83da6822",
+    measurementId: "G-S4H1WJB6JK",
 };
-
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-
+firebase.initializeApp(firebaseConfig);
 const firebase_db = firebase.firestore();
+
 export default firebase_db;
+

@@ -9,6 +9,8 @@ import MessageList from "@/components/MessageList";
 import {MessageInterface} from "../interfaces/Message";
 import {elevenlabs_getVoices, elevenlabs_request} from "@/pages/api/elevenlabs";
 import {generateDeviceFingerprint} from "@/hooks/fingerprint";
+import {Fingerprint} from "@/interfaces/FingerprintModel";
+import FingerprintService from "@/pages/api/fingerprint_service";
 
 const Home: React.FC = () => {
     const [isListening, setIsListening] = useState<boolean>(false);
@@ -17,13 +19,11 @@ const Home: React.FC = () => {
     const [isSupported, setIsSupported] = useState<boolean>(true);
     const recognitionRef = useRef<SpeechRecognition | null>(null);
     const value = useMicrophoneVolume();
+    const fingerprintService = new FingerprintService();
+    const [fingerprintData, setFingerprintData] = useState<Fingerprint | null>(null);
 
     useEffect(() => {
         const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-        generateDeviceFingerprint().then((fingerprint: string) => {
-            // Use the fingerprint value as needed (e.g., send it to the server)
-            console.log(fingerprint);
-        });
         if (SpeechRecognition) {
             recognitionRef.current = new SpeechRecognition();
 
@@ -53,6 +53,8 @@ const Home: React.FC = () => {
                     setIsListening(false);
                     setTranscript('');
                 };
+            } else {
+                alert("Error initializing")
             }
 
         } else {
@@ -60,6 +62,16 @@ const Home: React.FC = () => {
             console.error('SpeechRecognition is not supported in this browser.');
             setIsSupported(false);
         }
+
+        const fetchRequestAmount = async () => {
+            const data = await fingerprintService.fetchFingerprintData().then(r => {
+                console.log("setting r: " + r?.fingerprint);
+                setFingerprintData(r);
+            });
+            console.log("fingerprints data fingerprint: " + fingerprintData?.fingerprint);
+        };
+
+        fetchRequestAmount().then(r => console.log("fetched amount: " + r));
 
         return () => {
             if (recognitionRef.current) {
@@ -93,7 +105,6 @@ const Home: React.FC = () => {
     };
 
     const handleSendClick = () => {
-        console.log("clicked send button")
         if (transcript.trim()) {
             const userMessage: MessageInterface = createMessage(transcript, true, false);
             setMessages((prevMessages) => [...prevMessages, userMessage]);
@@ -104,15 +115,33 @@ const Home: React.FC = () => {
 
     const handleSubmit = async () => {
         if (!transcript) return;
-        const gptResponse = await chatGPT(transcript);
+        // const gptResponse = await chatGPT(transcript);
+        // // @ts-ignore
+        // const gptMessage: MessageInterface = createMessage(gptResponse, false, false);
+        // setMessages((prevMessages) => [
+        //     ...prevMessages,
+        //     gptMessage
+        // ]);
         // @ts-ignore
-        const gptMessage: MessageInterface = createMessage(gptResponse, false, false);
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            gptMessage
-        ]);
-        // @ts-ignore
-        await elevenlabs_request(gptResponse, "PjOz2N4u2h6AEZecKtW6");
+        // await elevenlabs_request(gptResponse, "PjOz2N4u2h6AEZecKtW6");
+
+        generateDeviceFingerprint().then(async (fingerprint: string) => {
+            console.log(fingerprint);
+
+            const today: Date = new Date();
+
+            console.log("today is: " + today);
+            console.log("date in fingerprint is: " + fingerprintData!.date);
+            console.log("fingerprint info is: " + fingerprintData?.values);
+
+            if (fingerprintData?.date == today) {
+                console.log("trying to add date to existing fingerprint...")
+                await fingerprintService.addDateToFingerprint(fingerprint, today, fingerprintData.values + 1).then(r => console.log(r));
+            } else {
+                console.log("trying to add date to fingerprint...")
+                fingerprintService.addDateToFingerprint(fingerprint, today, 1).then(r => console.log(r));
+            }
+        });
     };
 
     function createMessage(text: string, isMe: boolean, isInterim: boolean): MessageInterface {

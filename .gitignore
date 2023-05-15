@@ -101,6 +101,10 @@ certificates/localhost.crt
 
 .env.local
 
+# Firebase
+/pages/api/firebase.tsx
+
+
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
 crashlytics.properties
