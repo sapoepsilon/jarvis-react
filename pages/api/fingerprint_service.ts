@@ -24,18 +24,15 @@ class FingerprintService {
                 console.log("Document successfully written!");
             }
         );
-
     }
 
     public async fetchFingerprintData(): Promise<Fingerprint | null> {
         const firebaseDocRef = firebase_db.collection("fingerprints").doc("fingerprintsData");
-
         try {
             const doc = await firebaseDocRef.get();
 
             if (doc.exists) {
                 const data = doc.data() as Fingerprint;
-                console.log("Fingerprint data found:", data);
                 return data;
             } else {
                 console.error("No fingerprint data found.");

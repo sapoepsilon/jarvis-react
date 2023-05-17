@@ -11,6 +11,7 @@ import {elevenlabs_getVoices, elevenlabs_request} from "@/pages/api/elevenlabs";
 import {generateDeviceFingerprint} from "@/hooks/fingerprint";
 import {Fingerprint} from "@/interfaces/FingerprintModel";
 import FingerprintService from "@/pages/api/fingerprint_service";
+import Fingerprint_service from "@/pages/api/fingerprint_service";
 
 const Home: React.FC = () => {
     const [isListening, setIsListening] = useState<boolean>(false);
@@ -64,20 +65,35 @@ const Home: React.FC = () => {
         }
 
         const fetchRequestAmount = async () => {
-            const data = await fingerprintService.fetchFingerprintData().then(r => {
-                console.log("setting r: " + r?.fingerprint);
-                setFingerprintData(r);
-            });
-            console.log("fingerprints data fingerprint: " + fingerprintData?.fingerprint);
-        };
+            const r = await fingerprintService.fetchFingerprintData();
+            const timestampInMilliseconds = r.fingerprintValue.date.seconds * 1000 + r.fingerprintValue.date.nanoseconds / 1000000;
+            const date = new Date(timestampInMilliseconds);
+            const fingerprint: Fingerprint = {
+                fingerprint: r.fingerprintValue.fingerprint,
+                values: r.fingerprintValue.values,
+                date: date
+            }
+            setFingerprintData(fingerprint);
+            console.log("fingerprint date: " + fingerprint.date);
 
-        fetchRequestAmount().then(r => console.log("fetched amount: " + r));
+        }
 
+        fetchRequestAmount();
+
+        for (let finger in fingerprintData) {
+            console.log(finger + " " + fingerprintData[finger])
+        }
+        if(fingerprintData?.values >= 5 ) {
+            alert("You have reached the maximum amount of requests for today. Please try again tomorrow.");
+            setIsSupported(false);
+        }
         return () => {
             if (recognitionRef.current) {
                 recognitionRef.current.stop();
             }
         };
+
+
     }, []);
 
     const handleMouseDown = () => {
@@ -126,15 +142,14 @@ const Home: React.FC = () => {
         // await elevenlabs_request(gptResponse, "PjOz2N4u2h6AEZecKtW6");
 
         generateDeviceFingerprint().then(async (fingerprint: string) => {
-            console.log(fingerprint);
+
 
             const today: Date = new Date();
+            const fingerprintDate =  new Date(fingerprintData.date);
+            console.log("today: " + today.getDay());
+            console.log("fingerprint date day: " + fingerprintDate.getDay());
 
-            console.log("today is: " + today);
-            console.log("date in fingerprint is: " + fingerprintData!.date);
-            console.log("fingerprint info is: " + fingerprintData?.values);
-
-            if (fingerprintData?.date == today) {
+            if (fingerprintDate.getDay() == today.getDay()) {
                 console.log("trying to add date to existing fingerprint...")
                 await fingerprintService.addDateToFingerprint(fingerprint, today, fingerprintData.values + 1).then(r => console.log(r));
             } else {
