@@ -13,8 +13,9 @@ class FingerprintService {
         const dateString = date.toISOString().split('T')[0]; // Convert the date to a string in the format 'YYYY-MM-DD'
         console.log("from fingerprints")
         let fingerprintValue: Fingerprint = {fingerprint, date: date, values: value};
+        let fingerprintCollectionName: string = fingerprintValue.fingerprint
 
-        const fingerprintsRef =  firebase_db.collection(`fingerprints`).doc("fingerprintsData");
+        const fingerprintsRef =  firebase_db.collection(`fingerprints`).doc(fingerprintCollectionName);
         await fingerprintsRef.set({
             fingerprintValue
         }, {merge: true}).catch((error) => {
@@ -26,8 +27,8 @@ class FingerprintService {
         );
     }
 
-    public async fetchFingerprintData(): Promise<Fingerprint | null> {
-        const firebaseDocRef = firebase_db.collection("fingerprints").doc("fingerprintsData");
+    public async fetchFingerprintData(fingerprintCollectionName: string): Promise<Fingerprint | null> {
+        const firebaseDocRef = firebase_db.collection("fingerprints").doc(fingerprintCollectionName);
         try {
             const doc = await firebaseDocRef.get();
 

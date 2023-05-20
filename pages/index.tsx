@@ -11,7 +11,6 @@ import {elevenlabs_getVoices, elevenlabs_request} from "@/pages/api/elevenlabs";
 import {generateDeviceFingerprint} from "@/hooks/fingerprint";
 import {Fingerprint} from "@/interfaces/FingerprintModel";
 import FingerprintService from "@/pages/api/fingerprint_service";
-import Fingerprint_service from "@/pages/api/fingerprint_service";
 
 const Home: React.FC = () => {
     const [isListening, setIsListening] = useState<boolean>(false);
@@ -22,6 +21,8 @@ const Home: React.FC = () => {
     const value = useMicrophoneVolume();
     const fingerprintService = new FingerprintService();
     const [fingerprintData, setFingerprintData] = useState<Fingerprint | null>(null);
+    const [isRecognitionDone, setRecognitionDone] = useState(false);
+    const today: Date = new Date();
 
     useEffect(() => {
         const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -29,22 +30,24 @@ const Home: React.FC = () => {
             recognitionRef.current = new SpeechRecognition();
 
             if (recognitionRef.current) {
-                recognitionRef.current.continuous = true;
-                recognitionRef.current.interimResults = false;
+                recognitionRef.current.continuous = false;
+                recognitionRef.current.interimResults = true;
 
                 let interimTranscript = '';
                 let eachTranscript = '';
                 recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
-                    const isSamsungBrowser = navigator.userAgent.match(/SamsungBrowser/i);
+                    setRecognitionDone(true);
+
                     for (let i = event.resultIndex; i < event.results.length; i++) {
                         const transcript = event.results[i][0].transcript;
-                        if (event.results[i].isFinal) {
+                        if (!event.results[i].isFinal) {
+                            eachTranscript += transcript;
+                            setTranscript(interimTranscript + eachTranscript);
+                            console.log("trascript is set in is Final else")
+                        } else {
                             interimTranscript += transcript;
                             setTranscript(interimTranscript);
                             interimTranscript = '';
-                        } else {
-                            eachTranscript += transcript;
-                            setTranscript(interimTranscript + eachTranscript);
                         }
                     }
                     eachTranscript = '';
@@ -65,38 +68,32 @@ const Home: React.FC = () => {
         }
 
         const fetchRequestAmount = async () => {
-            const r = await fingerprintService.fetchFingerprintData();
-            const timestampInMilliseconds = r.fingerprintValue.date.seconds * 1000 + r.fingerprintValue.date.nanoseconds / 1000000;
-            const date = new Date(timestampInMilliseconds);
-            const fingerprint: Fingerprint = {
-                fingerprint: r.fingerprintValue.fingerprint,
-                values: r.fingerprintValue.values,
-                date: date
-            }
-            setFingerprintData(fingerprint);
-            console.log("fingerprint date: " + fingerprint.date);
-
+            let r
+            generateDeviceFingerprint().then(async (fingerprint: string) => {
+                r = await fingerprintService.fetchFingerprintData(fingerprint);
+                if (r != null || r != undefined) {
+                    const timestampInMilliseconds = r.fingerprintValue.date.seconds * 1000 + r.fingerprintValue.date.nanoseconds / 1000000;
+                    const date = new Date(timestampInMilliseconds);
+                    const fingerprint: Fingerprint = {
+                        fingerprint: r.fingerprintValue.fingerprint,
+                        values: r.fingerprintValue.values,
+                        date: date
+                    }
+                    setFingerprintData(fingerprint);
+                }
+            });
         }
-
         fetchRequestAmount();
-
-        for (let finger in fingerprintData) {
-            console.log(finger + " " + fingerprintData[finger])
-        }
-        if(fingerprintData?.values >= 5 ) {
-            alert("You have reached the maximum amount of requests for today. Please try again tomorrow.");
-            setIsSupported(false);
-        }
         return () => {
             if (recognitionRef.current) {
                 recognitionRef.current.stop();
             }
         };
-
-
     }, []);
 
     const handleMouseDown = () => {
+        setRecognitionDone(false);
+        setTranscript("Recognizing your voice...")
         if (recognitionRef.current) {
             setIsListening(true);
             if (isListening) {
@@ -121,11 +118,19 @@ const Home: React.FC = () => {
     };
 
     const handleSendClick = () => {
+        let fingerprintDate = fingerprintData?.date ? new Date(fingerprintData.date) : null;
         if (transcript.trim()) {
             const userMessage: MessageInterface = createMessage(transcript, true, false);
-            setMessages((prevMessages) => [...prevMessages, userMessage]);
-            handleSubmit().then(r => console.log(r));
-            setTranscript('');
+            if (userMessage.text != "Recognizing your voice..." && (fingerprintData?.values < 5 ||  fingerprintDate?.getDay() != today.getDay())) {
+                console.log("fingerprintData values: " + fingerprintData?.values);
+                console.log("set messages in handleSendClick");
+                setMessages((prevMessages) => [...prevMessages, userMessage]);
+                handleSubmit();
+                setTranscript('');
+            } else {
+                alert("You have reached the maximum amount of requests for today. Please try again tomorrow. Sadly, computational power doesn't grow on trees, yet...");
+                setIsSupported(false);
+            }
         }
     };
 
@@ -142,21 +147,24 @@ const Home: React.FC = () => {
         // await elevenlabs_request(gptResponse, "PjOz2N4u2h6AEZecKtW6");
 
         generateDeviceFingerprint().then(async (fingerprint: string) => {
-
-
-            const today: Date = new Date();
-            const fingerprintDate =  new Date(fingerprintData.date);
-            console.log("today: " + today.getDay());
-            console.log("fingerprint date day: " + fingerprintDate.getDay());
-
-            if (fingerprintDate.getDay() == today.getDay()) {
+            let fingerprintDate = fingerprintData?.date ? new Date(fingerprintData.date) : null;
+            if (fingerprintDate?.getDay() == today.getDay()) {
                 console.log("trying to add date to existing fingerprint...")
                 await fingerprintService.addDateToFingerprint(fingerprint, today, fingerprintData.values + 1).then(r => console.log(r));
+                const updateFingerprint: Fingerprint = {
+                    fingerprint: fingerprint,
+                    date: today,
+                    values: fingerprintData.values + 1
+                };
+                setFingerprintData(updateFingerprint)
             } else {
                 console.log("trying to add date to fingerprint...")
                 fingerprintService.addDateToFingerprint(fingerprint, today, 1).then(r => console.log(r));
+                const updateFingerprint: Fingerprint = {fingerprint: fingerprint, date: today, values: 1};
+                setFingerprintData(updateFingerprint)
             }
         });
+
     };
 
     function createMessage(text: string, isMe: boolean, isInterim: boolean): MessageInterface {
@@ -175,9 +183,20 @@ const Home: React.FC = () => {
                     <MessageList messages={messages} interimTranscript={transcript}/>
                 </div>
             </ScrollableView>
-            <div className="text-white">
-                {transcript}
+            <div className="text-white flex items-center">
+                {isRecognitionDone || !transcript ? (
+                    <div>{transcript}</div>
+                ) : (
+                    <>
+                        <div>{transcript}</div>
+                        <div className="spinner">
+                            <div className="double-bounce1"></div>
+                            <div className="double-bounce2"></div>
+                        </div>
+                    </>
+                )}
             </div>
+
             <div className="flex flex-wrap pt-2 justify-between items-center w-full max-w-2xl space-x-4">
                 <SendButton onClick={() => handleSendClick()}/>
                 <MicrophoneButton
