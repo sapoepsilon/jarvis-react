@@ -1,5 +1,27 @@
 import axios, {AxiosResponse} from 'axios';
+let audioBuffers: ArrayBuffer[] = [];  // global variable to store audioBuffers
+let isPlaying = false;  // global flag to check if audio is playing
+// Event system to listen for changes to audioBuffers
+class Emitter {
+    listeners: { [key: string]: Function[] } = {};
+    on(message: string, listener: Function) {
+        if (!this.listeners[message]) {
+            this.listeners[message] = [];
+        }
+        this.listeners[message].push(listener);
+    }
 
+    emit(message: string, payload: any) {
+        if (this.listeners[message]) {
+            for (const listener of this.listeners[message]) {
+                listener(payload);
+            }
+        }
+    }
+}
+
+const emitter = new Emitter();
+emitter.on('bufferReady', playNextAudio);
 export async function elevenlabs_request(inputText: string, voice_id: string) {
     const headers = new Headers({
         accept: '*/*',
@@ -8,11 +30,9 @@ export async function elevenlabs_request(inputText: string, voice_id: string) {
     });
 
     const sentences = processText(inputText);
-    const audioBuffers: ArrayBuffer[] = [];
     let sentenceNumber = 0;
     for (const sentence of sentences) {
         if (sentence.trim() !== '') {
-            console.log("fetche is now on: ");
             const response = await fetch(
                 'https://api.elevenlabs.io/v1/text-to-speech/' + voice_id,
                 {
@@ -25,23 +45,15 @@ export async function elevenlabs_request(inputText: string, voice_id: string) {
             );
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
-            } else {
-                console.log("response ok: " + sentence);
             }
-            const buffer = await response.arrayBuffer();
 
-            if (sentenceNumber == 0) {
-                playAudio(buffer);
-            } else {
-                audioBuffers.push(buffer);
-            }
+            const buffer = await response.arrayBuffer();
+            audioBuffers.push(buffer);
+
+            // Emit event to indicate buffer is ready
+            emitter.emit('bufferReady', buffer);
             sentenceNumber += 1;
         }
-    }
-
-    // Play the audio buffers in FIFO order
-    for (const buffer of audioBuffers) {
-        await playAudio(buffer);
     }
 }
 
@@ -69,11 +81,9 @@ function processText(text: string): string[] {
             processedSentences.push(sentence);
         }
     }
-
     if (buffer) {
         processedSentences.push(buffer);
     }
-
     return processedSentences;
 }
 
@@ -92,7 +102,19 @@ async function playAudio(buffer: ArrayBuffer) {
     source.buffer = audioBuffer;
     source.connect(audioContext.destination);
     source.start();
-    await new Promise(resolve => setTimeout(resolve, audioBuffer.duration * 100));
+
+    isPlaying = true; // set flag to true when audio starts
+
+    source.onended = function() {
+        isPlaying = false; // set flag back to false when audio finishes
+        setTimeout(playNextAudio,  500); // half second delay before playing next audio
+    };
+}
+
+async function playNextAudio() {
+    if (!isPlaying && audioBuffers.length > 0) {
+        await playAudio(audioBuffers.shift()!); // play next audio if any
+    }
 }
 
 export async function elevenlabs_getVoices(inputeText: string, voice_id: string) {

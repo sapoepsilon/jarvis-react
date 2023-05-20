@@ -6,10 +6,10 @@ import useMicrophoneVolume from "@/hooks/useMicrophoneVolume";
 import ScrollableView from "@/components/ScrollableView";
 import chatGPT from "@/pages/api/chatGPT";
 import MessageList from "@/components/MessageList";
-import {MessageInterface} from "../interfaces/Message";
+import {MessageInterface} from "@/interfaces/Message";
 import {elevenlabs_getVoices, elevenlabs_request} from "@/pages/api/elevenlabs";
 import {generateDeviceFingerprint} from "@/hooks/fingerprint";
-import {Fingerprint, FingerprintDocument} from "@/interfaces/FingerprintModel";
+import {Fingerprint} from "@/interfaces/FingerprintModel";
 import FingerprintService from "@/pages/api/fingerprint_service";
 
 const Home: React.FC = () => {
@@ -20,7 +20,7 @@ const Home: React.FC = () => {
     const recognitionRef = useRef<SpeechRecognition | null>(null);
     const value = useMicrophoneVolume();
     const fingerprintService = new FingerprintService();
-    const [fingerprint, setFingerprint] = useState<FingerprintDocument | null>(null);
+    const [fingerprint, setFingerprint] = useState<Fingerprint | null>(null);
     const [isRecognitionDone, setRecognitionDone] = useState(false);
     const today: Date = new Date();
 
@@ -30,7 +30,7 @@ const Home: React.FC = () => {
             recognitionRef.current = new SpeechRecognition();
 
             if (recognitionRef.current) {
-                recognitionRef.current.continuous = false;
+                recognitionRef.current.continuous = true;
                 recognitionRef.current.interimResults = true;
 
                 let interimTranscript = '';
@@ -47,7 +47,7 @@ const Home: React.FC = () => {
                         } else {
                             interimTranscript += transcript;
                             setTranscript(interimTranscript);
-                            interimTranscript = '';
+                            console.log("ELSE")
                         }
                     }
                     eachTranscript = '';
@@ -72,8 +72,12 @@ const Home: React.FC = () => {
             generateDeviceFingerprint().then(async (fingerprint: string) => {
                 r = await fingerprintService.fetchFingerprintData(fingerprint);
                 if (r != null || r != undefined) {
-                    const fingerprint: FingerprintDocument = {
-                        fingerprintValue: r.fingerprintValue
+                    const timestampInMilliseconds = r.fingerprintValue.date.seconds * 1000 + r.fingerprintValue.date.nanoseconds / 1000000;
+                    const date = new Date(timestampInMilliseconds);
+                    const fingerprint: Fingerprint = {
+                        fingerprint: r.fingerprintValue.fingerprint,
+                        date: date,
+                        values: r.fingerprintValue.values
                     }
                     setFingerprint(fingerprint);
                 }
@@ -113,54 +117,73 @@ const Home: React.FC = () => {
         setTranscript('');
     };
 
+    const playSound = () => {
+        const audio = new Audio("/bell.wav");
+        audio.play().then(r => console.log("sound played"));
+    };
+
     const handleSendClick = () => {
-        let fingerprintDate = fingerprint?.fingerprintValue.date ? new Date(fingerprint.fingerprintValue.date) : null;
+        if (transcript != "Recognizing your voice..." && transcript != "" && fingerprint?.values < 5) {
+            playSound();
+        }
+        let fingerprintDate = fingerprint?.date ? fingerprint.date : null;
         if (transcript.trim()) {
             const userMessage: MessageInterface = createMessage(transcript, true, false);
             // @ts-ignore
-            if (userMessage.text != "Recognizing your voice..." && (fingerprint.fingerprintValue.values < 5 ||  fingerprintDate?.getDay() != today.getDay())) {
-                setMessages((prevMessages) => [...prevMessages, userMessage]);
-                handleSubmit();
-                setTranscript('');
+            console.log("fingerprint values: " + fingerprint?.values + " fingerprint date: " + fingerprintDate?.getDay() + " today: " + today.getDay());
+
+            if (fingerprint != null) {
+                if (userMessage.text != "Recognizing your voice..." && (fingerprint?.values < 5 || fingerprintDate?.getDay() != today.getDay())) {
+                    // handleSubmit(userMessage);
+                } else {
+                    alert("You have reached the maximum amount of requests for today. Please try again tomorrow. Sadly, computational power doesn't grow on trees, yet...");
+                    setIsSupported(false);
+                }
             } else {
-                alert("You have reached the maximum amount of requests for today. Please try again tomorrow. Sadly, computational power doesn't grow on trees, yet...");
-                setIsSupported(false);
+                // handleSubmit(userMessage);
             }
         }
     };
-
-    const handleSubmit = async () => {
+    const removeLastMessage = () => {
+        setMessages(messages.slice(0, -1));
+    }
+    const handleSubmit = async (userMessage: MessageInterface) => {
+        setMessages((prevMessages) => [...prevMessages, userMessage]);
+        setTranscript('');
         if (!transcript) return;
-        // const gptResponse = await chatGPT(transcript);
-        // // @ts-ignore
-        // const gptMessage: MessageInterface = createMessage(gptResponse, false, false);
-        // setMessages((prevMessages) => [
-        //     ...prevMessages,
-        //     gptMessage
-        // ]);
+        const placeholder: MessageInterface = createMessage("Thinking", false, false);
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            placeholder
+        ]);
+        const gptResponse = await chatGPT(transcript);
         // @ts-ignore
-        // await elevenlabs_request(gptResponse, "PjOz2N4u2h6AEZecKtW6");
+        const gptMessage: MessageInterface = createMessage(gptResponse, false, false);
+        removeLastMessage()
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            gptMessage
+        ]);
+        // @ts-ignore
+        await elevenlabs_request(gptResponse, "PjOz2N4u2h6AEZecKtW6");
 
         generateDeviceFingerprint().then(async (fingerprintValue: string) => {
-            let fingerprintDate = fingerprint?.fingerprintValue.date ? new Date(fingerprint?.fingerprintValue.date) : null;
+            const fingerprintDate: Date | null = fingerprint?.date ? fingerprint.date : null;
+
             if (fingerprintDate?.getDay() == today.getDay()) {
                 console.log("trying to add date to existing fingerprintValue...")
-                await fingerprintService.addDateToFingerprint(fingerprintValue, today, fingerprint!.fingerprintValue.values + 1).then(r => console.log(r));
+                await fingerprintService.addDateToFingerprint(fingerprintValue, today, fingerprint!.values + 1).then(r => console.log(r));
                 const updateFingerprint: Fingerprint = {
                     fingerprint: fingerprintValue,
                     date: today,
-                    values: fingerprint!.fingerprintValue.values + 1
+                    values: fingerprint!.values + 1
                 };
-                const updateFingerprintDocument: FingerprintDocument = {
-                    fingerprintValue: updateFingerprint
-                }
-                setFingerprint(updateFingerprintDocument);
+                setFingerprint(updateFingerprint);
             } else {
                 console.log("trying to add date to fingerprintValue...")
                 fingerprintService.addDateToFingerprint(fingerprintValue, today, 1).then(r => console.log(r));
                 const updateFingerprint: Fingerprint = {fingerprint: fingerprintValue, date: today, values: 1};
-                const updateFingerprintDocument: FingerprintDocument = {fingerprintValue: updateFingerprint}
-                setFingerprint(updateFingerprintDocument);
+                setFingerprint(updateFingerprint);
             }
         });
 
