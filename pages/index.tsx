@@ -9,7 +9,7 @@ import MessageList from "@/components/MessageList";
 import {MessageInterface} from "../interfaces/Message";
 import {elevenlabs_getVoices, elevenlabs_request} from "@/pages/api/elevenlabs";
 import {generateDeviceFingerprint} from "@/hooks/fingerprint";
-import {Fingerprint} from "@/interfaces/FingerprintModel";
+import {Fingerprint, FingerprintDocument} from "@/interfaces/FingerprintModel";
 import FingerprintService from "@/pages/api/fingerprint_service";
 
 const Home: React.FC = () => {
@@ -20,7 +20,7 @@ const Home: React.FC = () => {
     const recognitionRef = useRef<SpeechRecognition | null>(null);
     const value = useMicrophoneVolume();
     const fingerprintService = new FingerprintService();
-    const [fingerprintData, setFingerprintData] = useState<Fingerprint | null>(null);
+    const [fingerprint, setFingerprint] = useState<FingerprintDocument | null>(null);
     const [isRecognitionDone, setRecognitionDone] = useState(false);
     const today: Date = new Date();
 
@@ -72,14 +72,10 @@ const Home: React.FC = () => {
             generateDeviceFingerprint().then(async (fingerprint: string) => {
                 r = await fingerprintService.fetchFingerprintData(fingerprint);
                 if (r != null || r != undefined) {
-                    const timestampInMilliseconds = r.fingerprintValue.date.seconds * 1000 + r.fingerprintValue.date.nanoseconds / 1000000;
-                    const date = new Date(timestampInMilliseconds);
-                    const fingerprint: Fingerprint = {
-                        fingerprint: r.fingerprintValue.fingerprint,
-                        values: r.fingerprintValue.values,
-                        date: date
+                    const fingerprint: FingerprintDocument = {
+                        fingerprintValue: r.fingerprintValue
                     }
-                    setFingerprintData(fingerprint);
+                    setFingerprint(fingerprint);
                 }
             });
         }
@@ -118,12 +114,11 @@ const Home: React.FC = () => {
     };
 
     const handleSendClick = () => {
-        let fingerprintDate = fingerprintData?.date ? new Date(fingerprintData.date) : null;
+        let fingerprintDate = fingerprint?.fingerprintValue.date ? new Date(fingerprint.fingerprintValue.date) : null;
         if (transcript.trim()) {
             const userMessage: MessageInterface = createMessage(transcript, true, false);
-            if (userMessage.text != "Recognizing your voice..." && (fingerprintData?.values < 5 ||  fingerprintDate?.getDay() != today.getDay())) {
-                console.log("fingerprintData values: " + fingerprintData?.values);
-                console.log("set messages in handleSendClick");
+            // @ts-ignore
+            if (userMessage.text != "Recognizing your voice..." && (fingerprint.fingerprintValue.values < 5 ||  fingerprintDate?.getDay() != today.getDay())) {
                 setMessages((prevMessages) => [...prevMessages, userMessage]);
                 handleSubmit();
                 setTranscript('');
@@ -146,22 +141,26 @@ const Home: React.FC = () => {
         // @ts-ignore
         // await elevenlabs_request(gptResponse, "PjOz2N4u2h6AEZecKtW6");
 
-        generateDeviceFingerprint().then(async (fingerprint: string) => {
-            let fingerprintDate = fingerprintData?.date ? new Date(fingerprintData.date) : null;
+        generateDeviceFingerprint().then(async (fingerprintValue: string) => {
+            let fingerprintDate = fingerprint?.fingerprintValue.date ? new Date(fingerprint?.fingerprintValue.date) : null;
             if (fingerprintDate?.getDay() == today.getDay()) {
-                console.log("trying to add date to existing fingerprint...")
-                await fingerprintService.addDateToFingerprint(fingerprint, today, fingerprintData.values + 1).then(r => console.log(r));
+                console.log("trying to add date to existing fingerprintValue...")
+                await fingerprintService.addDateToFingerprint(fingerprintValue, today, fingerprint!.fingerprintValue.values + 1).then(r => console.log(r));
                 const updateFingerprint: Fingerprint = {
-                    fingerprint: fingerprint,
+                    fingerprint: fingerprintValue,
                     date: today,
-                    values: fingerprintData.values + 1
+                    values: fingerprint!.fingerprintValue.values + 1
                 };
-                setFingerprintData(updateFingerprint)
+                const updateFingerprintDocument: FingerprintDocument = {
+                    fingerprintValue: updateFingerprint
+                }
+                setFingerprint(updateFingerprintDocument);
             } else {
-                console.log("trying to add date to fingerprint...")
-                fingerprintService.addDateToFingerprint(fingerprint, today, 1).then(r => console.log(r));
-                const updateFingerprint: Fingerprint = {fingerprint: fingerprint, date: today, values: 1};
-                setFingerprintData(updateFingerprint)
+                console.log("trying to add date to fingerprintValue...")
+                fingerprintService.addDateToFingerprint(fingerprintValue, today, 1).then(r => console.log(r));
+                const updateFingerprint: Fingerprint = {fingerprint: fingerprintValue, date: today, values: 1};
+                const updateFingerprintDocument: FingerprintDocument = {fingerprintValue: updateFingerprint}
+                setFingerprint(updateFingerprintDocument);
             }
         });
 

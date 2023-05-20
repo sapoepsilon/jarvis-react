@@ -1,6 +1,6 @@
 import "firebase/compat/firestore";
 import firebase_db from "./firebase";
-import {Fingerprint} from "@/interfaces/FingerprintModel";
+import {Fingerprint, FingerprintDocument} from "@/interfaces/FingerprintModel";
 import {doc, setDoc} from "firebase/firestore";
 import {set} from "@firebase/database";
 import {util} from "protobufjs";
@@ -27,13 +27,13 @@ class FingerprintService {
         );
     }
 
-    public async fetchFingerprintData(fingerprintCollectionName: string): Promise<Fingerprint | null> {
+    public async fetchFingerprintData(fingerprintCollectionName: string): Promise<FingerprintDocument | null> {
         const firebaseDocRef = firebase_db.collection("fingerprints").doc(fingerprintCollectionName);
         try {
             const doc = await firebaseDocRef.get();
 
             if (doc.exists) {
-                const data = doc.data() as Fingerprint;
+                const data = doc.data() as FingerprintDocument;
                 return data;
             } else {
                 console.error("No fingerprint data found.");

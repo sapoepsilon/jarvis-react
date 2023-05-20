@@ -3,3 +3,7 @@ export type Fingerprint= {
     date: Date;
     values: number;
 };
+
+export type FingerprintDocument = {
+    fingerprintValue: Fingerprint;
+};
