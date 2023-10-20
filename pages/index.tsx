@@ -31,7 +31,7 @@ const Home: React.FC = () => {
 
             if (recognitionRef.current) {
                 recognitionRef.current.continuous = true;
-                recognitionRef.current.interimResults = true;
+                recognitionRef.current.interimResults = false;
 
                 let interimTranscript = '';
                 let eachTranscript = '';
@@ -133,14 +133,14 @@ const Home: React.FC = () => {
             console.log("fingerprint values: " + fingerprint?.values + " fingerprint date: " + fingerprintDate?.getDay() + " today: " + today.getDay());
 
             if (fingerprint != null) {
-                if (userMessage.text != "Recognizing your voice..." && (fingerprint?.values < 5 || fingerprintDate?.getDay() != today.getDay())) {
-                    // handleSubmit(userMessage);
-                } else {
-                    alert("You have reached the maximum amount of requests for today. Please try again tomorrow. Sadly, computational power doesn't grow on trees, yet...");
-                    setIsSupported(false);
-                }
-            } else {
-                // handleSubmit(userMessage);
+            //     if (userMessage.text != "Recognizing your voice..." && (fingerprint?.values < 5 || fingerprintDate?.getDay() != today.getDay())) {
+            //         // handleSubmit(userMessage);
+            //     } else {
+            //         alert("You have reached the maximum amount of requests for today. Please try again tomorrow. Sadly, computational power doesn't grow on trees, yet...");
+            //         setIsSupported(false);
+            //     }
+            // } else {
+                handleSubmit(userMessage);
             }
         }
     };
