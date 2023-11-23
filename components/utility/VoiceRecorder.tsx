@@ -1,70 +1,91 @@
-// components/VoiceRecorder.tsx
-import { sendAudioFile } from '@/pages/api/sendAudioFile';
-import React, { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
+// import CircularAnimation from "@/components/CircularAnimation";
+// import { sendAudioFile } from '@/pages/api/sendAudioFile';
 
+// const MicrophoneButton = () => {
+//   const [isListening, setIsListening] = useState<boolean>(false);
+//   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+//   const [audioUrl, setAudioUrl] = useState<string>('');
+//   const [voiceValue, setVoiceValue] = useState<number>(0); // Adjust this as needed for animation
 
-interface VoiceRecorderProps {
-  // You can add additional props if needed
-}
+//   useEffect(() => {
+//     async function getMedia() {
+//       try {
+//         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+//         const recorder = new MediaRecorder(stream);
+//         setMediaRecorder(recorder);
 
-const VoiceRecorder: React.FC<VoiceRecorderProps> = () => {
-  const [recording, setRecording] = useState<boolean>(false);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
-  const [audioUrl, setAudioUrl] = useState<string>('');
+//         const audioChunks: BlobPart[] = [];
+//         recorder.ondataavailable = (event: BlobEvent) => {
+//           audioChunks.push(event.data);
+//         };
 
-  useEffect(() => {
-    async function getMedia() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const recorder = new MediaRecorder(stream);
-        setMediaRecorder(recorder);
+//         recorder.onstop = async () => {
+//           const audioBlob = new Blob(audioChunks);
+//           await sendAudioFile(audioBlob);
+//           setAudioUrl(URL.createObjectURL(audioBlob));
+//         };
+//       } catch (error) {
+//         console.error('Error accessing media devices.', error);
+//       }
+//     }
 
-        const audioChunks: BlobPart[] = [];
-        recorder.ondataavailable = (event: BlobEvent) => {
-          audioChunks.push(event.data);
-        };
+//     getMedia();
 
-        recorder.onstop = async () => {
-          const audioBlob = new Blob(audioChunks);
-          await sendAudioFile(audioBlob);
-          setAudioUrl(URL.createObjectURL(audioBlob));
-        };
-      } catch (error) {
-        console.error('Error accessing media devices.', error);
-      }
-    }
+//     const cleanup = () => {
+//       if (audioUrl) URL.revokeObjectURL(audioUrl);
+//     };
 
-    getMedia();
+//     window.addEventListener('beforeunload', cleanup);
 
-    // Cleanup function to delete the file on close
-    const cleanup = () => {
-      if (audioUrl) URL.revokeObjectURL(audioUrl);
-    };
+//     return () => {
+//       window.removeEventListener('beforeunload', cleanup);
+//     };
+//   }, [audioUrl]);
 
-    window.addEventListener('beforeunload', cleanup);
+//   const handleMouseDown = () => {
+//     mediaRecorder?.start();
+//     setIsListening(true);
+//   };
 
-    return () => {
-      window.removeEventListener('beforeunload', cleanup);
-    };
-  }, [audioUrl]);
+//   const handleMouseUp = () => {
+//     mediaRecorder?.stop();
+//     setIsListening(false);
+//   };
 
-  const startRecording = () => {
-    mediaRecorder?.start();
-    setRecording(true);
-  };
+//   const handleTouchStart = (event: React.TouchEvent<HTMLButtonElement>) => {
+//     event.preventDefault();
+//     handleMouseDown();
+//   };
 
-  const stopRecording = () => {
-    mediaRecorder?.stop();
-    setRecording(false);
-  };
+//   const handleTouchEnd = (event: React.TouchEvent<HTMLButtonElement>) => {
+//     event.preventDefault();
+//     handleMouseUp();
+//   };
 
-  return (
-    <div>
-      <button onClick={startRecording} disabled={recording}>Record</button>
-      <button onClick={stopRecording} disabled={!recording}>Stop</button>
-      {audioUrl && <audio src={audioUrl} controls />}
-    </div>
-  );
-};
+//   return (
+//     <div className="flex items-center justify-center bg-gray-100">
+//       <CircularAnimation
+//         size={200}
+//         waveColor="#4B5563"
+//         value={isListening ? voiceValue : 0}
+//       >
+//         <button
+//           className={`px-9 py-3 rounded-full focus:outline-none select-none ${
+//             isListening ? 'bg-red-600' : 'hover:bg-blue-300 bg-gray-600'
+//           } `}
+//           onMouseDown={handleMouseDown}
+//           onMouseUp={handleMouseUp}
+//           onTouchStart={handleTouchStart}
+//           onTouchEnd={handleTouchEnd}
+//           onTouchCancel={handleTouchEnd}
+//         >
+//           🎤
+//         </button>
+//       </CircularAnimation>
+//       {audioUrl && <audio src={audioUrl} controls />}
+//     </div>
+//   );
+// };
 
-export default VoiceRecorder;
+// export default MicrophoneButton;

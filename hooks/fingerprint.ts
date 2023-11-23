@@ -5,7 +5,6 @@ export const generateDeviceFingerprint = async (): Promise<string> => {
             // Client-side fingerprint generation
             FingerprintJS.getPromise()
                 .then((components: FingerprintJS.Component[]) => {
-                    console.log("components", components);
                     const values = components.map((component) => component.value);
                     const fingerprint = FingerprintJS.x64hash128(values.join(''), 31);
                     resolve(fingerprint);

@@ -7,13 +7,18 @@ import ScrollableView from "@/components/ScrollableView";
 import chatGPT from "@/pages/api/chatGPT";
 import MessageList from "@/components/MessageList";
 import {MessageInterface} from "@/interfaces/Message";
-import {elevenlabs_getVoices, elevenlabs_request} from "@/pages/api/elevenlabs";
+// import {elevenlabs_getVoices, elevenlabs_request} from "@/pages/api/elevenlabs";
 import {generateDeviceFingerprint} from "@/hooks/fingerprint";
 import {Fingerprint} from "@/interfaces/FingerprintModel";
 import FingerprintService from "@/pages/api/fingerprint_service";
+// import VoiceRecorder from '@/components/utility/VoiceRecorder';
 
 const Home: React.FC = () => {
     const [isListening, setIsListening] = useState<boolean>(false);
+    const handleTranscriptUpdate = (newTranscript: string) => {
+        setTranscript(newTranscript);
+      };
+      
     const [transcript, setTranscript] = useState<string>('');
     const [messages, setMessages] = useState<MessageInterface[]>([]);
     const [isSupported, setIsSupported] = useState<boolean>(true);
@@ -55,7 +60,7 @@ const Home: React.FC = () => {
                 recognitionRef.current.onend = () => {
                     console.log("recognition ended");
                     setIsListening(false);
-                    setTranscript('');
+                    setTranscript(interimTranscript);
                 };
             } else {
                 alert("Error initializing")
@@ -92,15 +97,15 @@ const Home: React.FC = () => {
     }, []);
 
     const handleMouseDown = () => {
-        setRecognitionDone(false);
-        setTranscript("Recognizing your voice...")
-        if (recognitionRef.current) {
-            setIsListening(true);
-            if (isListening) {
-                return;
-            }
-            recognitionRef.current.start();
-        }
+        // setRecognitionDone(false);
+        // setTranscript("Recognizing your voice...")
+        // if (recognitionRef.current) {
+        //     setIsListening(true);
+        //     if (isListening) {
+        //         return;
+        //     }
+        //     recognitionRef.current.start();
+        // }
     };
 
     const handleMouseUp = () => {
@@ -126,22 +131,15 @@ const Home: React.FC = () => {
         if (transcript != "Recognizing your voice..." && transcript != "" && fingerprint?.values < 5) {
             playSound();
         }
+        handleSubmit(createMessage(transcript, true, false));
         let fingerprintDate = fingerprint?.date ? fingerprint.date : null;
         if (transcript.trim()) {
             const userMessage: MessageInterface = createMessage(transcript, true, false);
             // @ts-ignore
             console.log("fingerprint values: " + fingerprint?.values + " fingerprint date: " + fingerprintDate?.getDay() + " today: " + today.getDay());
 
-            if (fingerprint != null) {
-            //     if (userMessage.text != "Recognizing your voice..." && (fingerprint?.values < 5 || fingerprintDate?.getDay() != today.getDay())) {
-            //         // handleSubmit(userMessage);
-            //     } else {
-            //         alert("You have reached the maximum amount of requests for today. Please try again tomorrow. Sadly, computational power doesn't grow on trees, yet...");
-            //         setIsSupported(false);
-            //     }
-            // } else {
-                handleSubmit(userMessage);
-            }
+            handleSubmit(userMessage);
+            
         }
     };
     const removeLastMessage = () => {
@@ -165,7 +163,8 @@ const Home: React.FC = () => {
             gptMessage
         ]);
         // @ts-ignore
-        await elevenlabs_request(gptResponse, "PjOz2N4u2h6AEZecKtW6");
+        // TODO: Use openAI TTS
+        
 
         generateDeviceFingerprint().then(async (fingerprintValue: string) => {
             const fingerprintDate: Date | null = fingerprint?.date ? fingerprint.date : null;
@@ -197,15 +196,19 @@ const Home: React.FC = () => {
         }
     }
 
+    // <MicrophoneButton  isListening={isListening}
+    //                 onMouseDown={handleMouseDown}
+    //                 onMouseUp={handleMouseUp}
+    //                 voiceValue={value}/>
     typeof navigator !== 'undefined' && Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     return (
         <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
             <ScrollableView>
-                <div className="mb-5 w-full">
+                <div className="w-full mb-5">
                     <MessageList messages={messages} interimTranscript={transcript}/>
                 </div>
             </ScrollableView>
-            <div className="text-white flex items-center">
+            <div className="flex items-center text-white">
                 {isRecognitionDone || !transcript ? (
                     <div>{transcript}</div>
                 ) : (
@@ -219,15 +222,11 @@ const Home: React.FC = () => {
                 )}
             </div>
 
-            <div className="flex flex-wrap pt-2 justify-between items-center w-full max-w-2xl space-x-4">
+            <div className="flex flex-wrap items-center justify-between w-full max-w-2xl pt-2 space-x-4">
                 <SendButton onClick={() => handleSendClick()}/>
-                <MicrophoneButton
-                    isListening={isListening}
-                    onMouseDown={handleMouseDown}
-                    onMouseUp={handleMouseUp}
-                    voiceValue={value}/>
+                <MicrophoneButton onTranscriptUpdate={handleTranscriptUpdate} />
                 <button
-                    className="bg-red-500 text-white px-3 py-3 rounded focus:outline-none"
+                    className="px-3 py-3 text-white bg-red-500 rounded focus:outline-none"
                     onClick={() => handleClearClick()}
                 >
                     Clear
