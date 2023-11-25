@@ -137,14 +137,13 @@ const Home: React.FC = () => {
         if (transcript != "Recognizing your voice..." && transcript != "" && fingerprint?.values < 5) {
             playSound();
         }
-        // handleSubmit(createMessage(transcript, true, false));
         let fingerprintDate = fingerprint?.date ? fingerprint.date : null;
         if (transcript.trim()) {
             const userMessage: MessageInterface = createMessage(transcript, true, false);
             // @ts-ignore
             console.log("fingerprint values: " + fingerprint?.values + " fingerprint date: " + fingerprintDate?.getDay() + " today: " + today.getDay());
 
-            handleSubmit(userMessage);
+            handleSubmit(userMessage).then(r => console.log(r));
             
         }
     };
@@ -203,10 +202,6 @@ const Home: React.FC = () => {
         }
     }
 
-    // <MicrophoneButton  isListening={isListening}
-    //                 onMouseDown={handleMouseDown}
-    //                 onMouseUp={handleMouseUp}
-    //                 voiceValue={value}/>
     typeof navigator !== 'undefined' && Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     return (
         <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
