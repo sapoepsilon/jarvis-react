@@ -11,6 +11,7 @@ import {MessageInterface} from "@/interfaces/Message";
 import {generateDeviceFingerprint} from "@/hooks/fingerprint";
 import {Fingerprint} from "@/interfaces/FingerprintModel";
 import FingerprintService from "@/pages/api/fingerprint_service";
+import { send } from 'process';
 // import VoiceRecorder from '@/components/utility/VoiceRecorder';
 
 const Home: React.FC = () => {
@@ -27,6 +28,7 @@ const Home: React.FC = () => {
     const fingerprintService = new FingerprintService();
     const [fingerprint, setFingerprint] = useState<Fingerprint | null>(null);
     const [isRecognitionDone, setRecognitionDone] = useState(false);
+    const [sendTime, setSendTime] = useState<Date | null>(null);
     const today: Date = new Date();
 
     useEffect(() => {
@@ -96,25 +98,25 @@ const Home: React.FC = () => {
         };
     }, []);
 
-    const handleMouseDown = () => {
-        // setRecognitionDone(false);
-        // setTranscript("Recognizing your voice...")
-        // if (recognitionRef.current) {
-        //     setIsListening(true);
-        //     if (isListening) {
-        //         return;
-        //     }
-        //     recognitionRef.current.start();
-        // }
-    };
+    // const handleMouseDown = () => {
+    //     // setRecognitionDone(false);
+    //     // setTranscript("Recognizing your voice...")
+    //     // if (recognitionRef.current) {
+    //     //     setIsListening(true);
+    //     //     if (isListening) {
+    //     //         return;
+    //     //     }
+    //     //     recognitionRef.current.start();
+    //     // }
+    // };
 
-    const handleMouseUp = () => {
-        if (recognitionRef.current) {
-            setIsListening(false);
-            recognitionRef.current.stop();
-            handleSendClick();
-        }
-    };
+    // const handleMouseUp = () => {
+    //     if (recognitionRef.current) {
+    //         setIsListening(false);
+    //         recognitionRef.current.stop();
+    //         handleSendClick();
+    //     }
+    // };
 
     const handleClearClick = () => {
         setTranscript('');
@@ -128,10 +130,14 @@ const Home: React.FC = () => {
     };
 
     const handleSendClick = () => {
+        const sendClickTime = new Date();
+        console.log("sendClickTime: " + sendClickTime.getTime());
+        setSendTime(sendClickTime);
+
         if (transcript != "Recognizing your voice..." && transcript != "" && fingerprint?.values < 5) {
             playSound();
         }
-        handleSubmit(createMessage(transcript, true, false));
+        // handleSubmit(createMessage(transcript, true, false));
         let fingerprintDate = fingerprint?.date ? fingerprint.date : null;
         if (transcript.trim()) {
             const userMessage: MessageInterface = createMessage(transcript, true, false);
@@ -149,15 +155,16 @@ const Home: React.FC = () => {
         setMessages((prevMessages) => [...prevMessages, userMessage]);
         setTranscript('');
         if (!transcript) return;
-        const placeholder: MessageInterface = createMessage("Thinking", false, false);
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            placeholder
-        ]);
-        const gptResponse = await chatGPT(transcript);
+        // const placeholder: MessageInterface = createMessage("Thinking", false, false);
+        // setMessages((prevMessages) => [
+        //     ...prevMessages,
+        //     placeholder
+        // ]);
+        const gptResponse = await chatGPT(transcript, sendTime ?? new Date());
+
         // @ts-ignore
         const gptMessage: MessageInterface = createMessage(gptResponse, false, false);
-        removeLastMessage()
+        // removeLastMessage()
         setMessages((prevMessages) => [
             ...prevMessages,
             gptMessage
