@@ -1,30 +1,33 @@
 import React, {useState, useEffect, useRef} from 'react';
-import MicrophoneButton from '../components/MicrophoneButton';
-import SendButton from '../components/SendButton';
+import MicrophoneButton from '../components/DemoPage/MicrophoneButton';
+import SendButton from '../components/DemoPage/SendButton';
 import 'tailwindcss/tailwind.css';
-import useMicrophoneVolume from "@/hooks/useMicrophoneVolume";
-import ScrollableView from "@/components/ScrollableView";
-import chatGPT from "@/pages/api/chatGPT";
-import MessageList from "@/components/MessageList";
+// import useMicrophoneVolume from "@/hooks/useMicrophoneVolume";
+import ScrollableView from "@/components/DemoPage/ScrollableView";
+import chatGPT from './api/chatGPT';
+import MessageList from "@/components/DemoPage/MessageList";
 import {MessageInterface} from "@/interfaces/Message";
 // import {elevenlabs_getVoices, elevenlabs_request} from "@/pages/api/elevenlabs";
 import {generateDeviceFingerprint} from "@/hooks/fingerprint";
 import {Fingerprint} from "@/interfaces/FingerprintModel";
 import FingerprintService from "@/pages/api/fingerprint_service";
 import { send } from 'process';
+import {toast} from "@/constants/debug_toast";
+import {set} from "@firebase/database";
 // import VoiceRecorder from '@/components/utility/VoiceRecorder';
 
 const Home: React.FC = () => {
     const [isListening, setIsListening] = useState<boolean>(false);
     const handleTranscriptUpdate = (newTranscript: string) => {
-        setTranscript(newTranscript);
+        setTranscript(newTranscript ?? "");
+        handleSendClick(newTranscript);
       };
       
     const [transcript, setTranscript] = useState<string>('');
     const [messages, setMessages] = useState<MessageInterface[]>([]);
     const [isSupported, setIsSupported] = useState<boolean>(true);
     const recognitionRef = useRef<SpeechRecognition | null>(null);
-    const value = useMicrophoneVolume();
+    // const value = useMicrophoneVolume();
     const fingerprintService = new FingerprintService();
     const [fingerprint, setFingerprint] = useState<Fingerprint | null>(null);
     const [isRecognitionDone, setRecognitionDone] = useState(false);
@@ -129,22 +132,20 @@ const Home: React.FC = () => {
         audio.play().then(r => console.log("sound played"));
     };
 
-    const handleSendClick = () => {
+    const handleSendClick = (newTranscript?: string) => {
+        console.log("new transcript: " + newTranscript);
         const sendClickTime = new Date();
         console.log("sendClickTime: " + sendClickTime.getTime());
         setSendTime(sendClickTime);
-
         if (transcript != "Recognizing your voice..." && transcript != "" && fingerprint?.values < 5) {
             playSound();
         }
         let fingerprintDate = fingerprint?.date ? fingerprint.date : null;
-        if (transcript.trim()) {
-            const userMessage: MessageInterface = createMessage(transcript, true, false);
-            // @ts-ignore
-            console.log("fingerprint values: " + fingerprint?.values + " fingerprint date: " + fingerprintDate?.getDay() + " today: " + today.getDay());
-
+        if (newTranscript!.trim()) {
+            const userMessage: MessageInterface = createMessage(newTranscript!, true, false);
             handleSubmit(userMessage).then(r => console.log(r));
-            
+        } else {
+            console.log("transcript is empty " + transcript)
         }
     };
     const removeLastMessage = () => {
@@ -152,14 +153,9 @@ const Home: React.FC = () => {
     }
     const handleSubmit = async (userMessage: MessageInterface) => {
         setMessages((prevMessages) => [...prevMessages, userMessage]);
-        setTranscript('');
-        if (!transcript) return;
-        // const placeholder: MessageInterface = createMessage("Thinking", false, false);
-        // setMessages((prevMessages) => [
-        //     ...prevMessages,
-        //     placeholder
-        // ]);
-        const gptResponse = await chatGPT(transcript, sendTime ?? new Date());
+        setTranscript("");
+        console.log("userMessage: " + userMessage.text)
+        const gptResponse = await chatGPT(userMessage.text, sendTime ?? new Date());
 
         // @ts-ignore
         const gptMessage: MessageInterface = createMessage(gptResponse, false, false);
@@ -170,7 +166,7 @@ const Home: React.FC = () => {
         ]);
         // @ts-ignore
         // TODO: Use openAI TTS
-        
+
 
         generateDeviceFingerprint().then(async (fingerprintValue: string) => {
             const fingerprintDate: Date | null = fingerprint?.date ? fingerprint.date : null;
@@ -226,11 +222,10 @@ const Home: React.FC = () => {
 
             <div className="flex flex-wrap items-center justify-between w-full max-w-2xl pt-2 space-x-4">
                 <SendButton onClick={() => handleSendClick()}/>
-                <MicrophoneButton onTranscriptUpdate={handleTranscriptUpdate} />
+                <MicrophoneButton onTranscriptUpdate={handleTranscriptUpdate } />
                 <button
                     className="px-3 py-3 text-white bg-red-500 rounded focus:outline-none"
-                    onClick={() => handleClearClick()}
-                >
+                    onClick={() => handleClearClick()}>
                     Clear
                 </button>
             </div>

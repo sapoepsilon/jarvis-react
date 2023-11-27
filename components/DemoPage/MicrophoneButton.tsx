@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import CircularAnimation from "@/components/CircularAnimation";
+import CircularAnimation from "@/components/DemoPage/CircularAnimation";
 import { sendAudioFile } from '@/pages/api/sendAudioFile';
 
-const MicrophoneButton = ({ onTranscriptUpdate }: { onTranscriptUpdate: (transcript: string) => void }) => {  const [isListening, setIsListening] = useState<boolean>(false);
+const MicrophoneButton = ({ onTranscriptUpdate }: { onTranscriptUpdate: (transcript: string) => void}) => {
+  const [isListening, setIsListening] = useState<boolean>(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [audioUrl, setAudioUrl] = useState<string>('');
   const [voiceValue, setVoiceValue] = useState<number>(0); // Adjust this as needed for animation

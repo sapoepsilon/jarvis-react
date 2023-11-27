@@ -1,5 +1,3 @@
-// add an argument to get a send click time 
-// add an argument to get a receive click time
 async function playAudioFromText(text: string, voice: string = "alloy", sendClickTime: Date): Promise<void> {
   const requestStartTime = new Date();
   console.log(`Request start time: ${requestStartTime.toISOString()}`);

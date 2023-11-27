@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const serverResponse = await fetch(externalApiUrl, {
             method: 'POST',
             headers: req.headers,
-            body: req.body
+                body: req.body
         });
 
         // Forwarding the response back to the client
