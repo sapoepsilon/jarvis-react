@@ -155,7 +155,8 @@ const Home: React.FC = () => {
         setMessages((prevMessages) => [...prevMessages, userMessage]);
         setTranscript("");
         console.log("userMessage: " + userMessage.text)
-        const gptResponse = await chatGPT(userMessage.text, sendTime ?? new Date());
+        const gptResponse = "";
+            // await chatGPT(userMessage.text, sendTime ?? new Date());
 
         // @ts-ignore
         const gptMessage: MessageInterface = createMessage(gptResponse, false, false);
