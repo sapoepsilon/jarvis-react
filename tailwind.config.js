@@ -12,6 +12,7 @@ module.exports = {
                 'app-background': '#2B2D30',
                 'gpt-message': '#262529',
                 'user-message': '#4991F7',
+                'chatgenie-primary': '#010454',
             },
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

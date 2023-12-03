@@ -14,6 +14,7 @@ import FingerprintService from "@/pages/api/fingerprint_service";
 import { send } from 'process';
 import {toast} from "@/constants/debug_toast";
 import {set} from "@firebase/database";
+import Navbar from "@/components/navbar/NavBar";
 // import VoiceRecorder from '@/components/utility/VoiceRecorder';
 
 const Home: React.FC = () => {
@@ -155,8 +156,7 @@ const Home: React.FC = () => {
         setMessages((prevMessages) => [...prevMessages, userMessage]);
         setTranscript("");
         console.log("userMessage: " + userMessage.text)
-        const gptResponse = "";
-            // await chatGPT(userMessage.text, sendTime ?? new Date());
+        const gptResponse = await chatGPT(userMessage.text, sendTime ?? new Date());
 
         // @ts-ignore
         const gptMessage: MessageInterface = createMessage(gptResponse, false, false);
@@ -202,6 +202,7 @@ const Home: React.FC = () => {
     typeof navigator !== 'undefined' && Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     return (
         <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
+            <Navbar />
             <ScrollableView>
                 <div className="w-full mb-5">
                     <MessageList messages={messages} interimTranscript={transcript}/>

@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const externalApiUrl = 'https://pop-os.panda-anaconda.ts.net/inference';
+    const externalApiUrl = 'http://127.0.0.1:8080/inference';
 
     try {
         // Forwarding the request to the external API

@@ -8,7 +8,7 @@ export async function sendAudioFile(audioBlob: Blob): Promise<string> {
     formData.append('response-format', 'json');
     var responseMessage = "";
     try {
-      const response = await fetch('https://pop-os.panda-anaconda.ts.net/inference', {
+      const response = await fetch('http://127.0.0.1:8080/inference', {
         method: 'POST',
         body: formData,
       });
