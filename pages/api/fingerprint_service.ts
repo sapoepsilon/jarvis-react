@@ -1,8 +1,6 @@
-import "firebase/compat/firestore";
-import firebase_db from "./firebase";
-import {Fingerprint, FingerprintDocument} from "@/interfaces/FingerprintModel";
-import {doc, setDoc} from "firebase/firestore";
-import {set} from "@firebase/database";
+import firebase from "firebase/compat/app"
+import "firebase/compat/auth"
+import "firebase/compat/firestore"
 import {util} from "protobufjs";
 import merge = util.merge;
 
