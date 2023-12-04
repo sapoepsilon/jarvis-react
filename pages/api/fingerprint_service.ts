@@ -1,10 +1,7 @@
 import "firebase/compat/firestore";
-import firebase_db from "./firebase";
 import {Fingerprint, FingerprintDocument} from "@/interfaces/FingerprintModel";
-import {doc, setDoc} from "firebase/firestore";
-import {set} from "@firebase/database";
 import {util} from "protobufjs";
-import merge = util.merge;
+import firebase_db from "@/pages/api/.example.firebase";
 
 class FingerprintService {
 
