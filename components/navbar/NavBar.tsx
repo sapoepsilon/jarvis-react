@@ -22,7 +22,7 @@ const Navbar = () => {
             <NavbarItem href="/features" title="Features" />
             <NavbarItem href="/services" title="Services" />
             <NavbarItem href="/pricing" title="Pricing" />
-            <NavbarItem href="/support" title="Support" />
+            <NavbarItem href="/contact" title="Contact us" />
             <NavbarItem href="LandingPage" title="Landing" />
           </div>
           {/* Login button container */}
