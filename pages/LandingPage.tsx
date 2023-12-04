@@ -5,8 +5,10 @@ import Image from "next/image";
 import Sparkles from "../public/sparkles.svg";
 import LoginButton from "@/components/navbar/LoginButtonNavBar";
 import RotatingLogo from "@/components/RotatingLogo";
+import { useRouter } from "next/router";
 
 const LandingPage: React.FC = () => {
+  const router = useRouter();
   const handleExploreClick = () => {
     // Use smooth scrolling to scroll to the target section
     document
@@ -21,9 +23,9 @@ const LandingPage: React.FC = () => {
 
         <div className="w-1/2">
           <p className="font-inter font-interBold text-6xl mt-6 text-center bg-gradient-to-r from-blue-500 via-white to-accent-purple text-transparent bg-clip-text">
-            Automate boring aspects of small businesses with Taskable
+            Automate boring aspects of small businesses with Chat geanie
           </p>
-          <p className="font-inter font-interRegular text-2xl mt-6 text-center text-white">
+          <p className="font-inter font-interRegular text-2xl pt-6 text-center text-white">
             Handle bureaucratic nature of doing small business, and help
             customer facing side of business AI
           </p>
@@ -34,7 +36,11 @@ const LandingPage: React.FC = () => {
             text="Explore"
             onClick={handleExploreClick}
           />
-          <LoginButton textSize="xl" text="Demo" />
+          <LoginButton
+            textSize="xl"
+            text="Demo"
+            onClick={() => router.push("./pages/index.tsx")}
+          />
         </div>
       </div>
       <div className="flex flex-grow flex-col w-full items-center pt-16 mb-6 rounded-b-[40px] pb-10 bg-gradient-to-b from-linear-gradient-start to-orange-500">
