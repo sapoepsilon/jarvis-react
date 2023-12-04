@@ -28,6 +28,7 @@ const Navbar = () => {
           {/* Login button container */}
           <div className="hidden md:flex items-center space-x-3">
             {/* Use the LoginButton component */}
+            <LoginButton text="Demo" />
             <LoginButton text="Login" />
           </div>
         </div>
