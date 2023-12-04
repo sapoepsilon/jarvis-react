@@ -123,6 +123,7 @@ const Home: React.FC = () => {
     };
 
     const handleSendClick = () => {
+        // @ts-ignore
         if (transcript != "Recognizing your voice..." && transcript != "" && fingerprint?.values < 5) {
             playSound();
         }
