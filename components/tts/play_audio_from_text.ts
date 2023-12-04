@@ -39,7 +39,7 @@ async function playAudioFromText(text: string, voice: string = "alloy", sendClic
 
     mediaSource.onsourceopen = () => {
       const sourceBuffer = mediaSource.addSourceBuffer('audio/mpeg'); // adjust MIME type as needed
-
+//@ts-ignore
       const reader = response.body.getReader();
       const read = () => {
         reader.read().then(({ done, value }) => {

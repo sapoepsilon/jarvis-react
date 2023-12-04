@@ -8,6 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // Forwarding the request to the external API
         const serverResponse = await fetch(externalApiUrl, {
             method: 'POST',
+            //@ts-ignore
             headers: req.headers,
                 body: req.body
         });

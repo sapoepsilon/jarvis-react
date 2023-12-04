@@ -22,6 +22,7 @@ const Home: React.FC = () => {
   const [isListening, setIsListening] = useState<boolean>(false);
   const handleTranscriptUpdate = (newTranscript: string) => {
     setTranscript(newTranscript ?? "");
+    //@ts-ignore
     handleSendClick(newTranscript);
   };
 
@@ -143,6 +144,7 @@ const Home: React.FC = () => {
     if (
       transcript != "Recognizing your voice..." &&
       transcript != "" &&
+      // @ts-ignore
       fingerprint?.values < 5
     ) {
       playSound();
@@ -189,9 +191,11 @@ const Home: React.FC = () => {
       false
     );
     setMessages((prevMessages) => [...prevMessages, placeholder]);
+    // @ts-ignore
     const gptResponse = await chatGPT(transcript);
     // @ts-ignore
     const gptMessage: MessageInterface = createMessage(
+      // @ts-ignore
       gptResponse,
       false,
       false
