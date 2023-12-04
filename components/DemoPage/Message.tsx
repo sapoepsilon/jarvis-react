@@ -1,5 +1,5 @@
 import React from 'react';
-import {MessageInterface as MessageModel} from '../interfaces/Message';
+import {MessageInterface as MessageModel} from '../../interfaces/Message';
 
 
 export  interface MessageProps {
