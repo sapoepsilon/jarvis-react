@@ -1,12 +1,13 @@
-import firebase from "firebase/compat/app"
-import "firebase/compat/auth"
-import "firebase/compat/firestore"
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+import {Fingerprint, FingerprintDocument} from "@/interfaces/FingerprintModel";
+import {doc, setDoc} from "firebase/firestore";
+import {set} from "@firebase/database";
 import {util} from "protobufjs";
 import merge = util.merge;
+import firebase_db from "@/pages/api/.example.firebase";
 
 class FingerprintService {
-
-
     public async addDateToFingerprint(fingerprint: string, date: Date, value: number): Promise<void> {
         const dateString = date.toISOString().split('T')[0]; // Convert the date to a string in the format 'YYYY-MM-DD'
         console.log("from fingerprints")

@@ -1,5 +1,4 @@
-import firebase_db from "../pages/api/firebase";
-
+import firebase_db from "@/pages/api/.example.firebase";
 const RATE_LIMIT = 10;
 const WINDOW_MS = 60 * 60 * 1000; // 1 hour window
 

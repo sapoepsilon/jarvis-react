@@ -139,30 +139,41 @@ const Home: React.FC = () => {
     audio.play().then((r) => console.log("sound played"));
   };
 
-  const handleSendClick = (newTranscript?: string) => {
-    console.log("new transcript: " + newTranscript);
-    const sendClickTime = new Date();
-    console.log("sendClickTime: " + sendClickTime.getTime());
-    setSendTime(sendClickTime);
-    //@ts-ignore
+  const handleSendClick = () => {
     if (
       transcript != "Recognizing your voice..." &&
       transcript != "" &&
-      //@ts-ignore
       fingerprint?.values < 5
     ) {
       playSound();
     }
     let fingerprintDate = fingerprint?.date ? fingerprint.date : null;
-    if (newTranscript!.trim()) {
+    if (transcript.trim()) {
       const userMessage: MessageInterface = createMessage(
-        newTranscript!,
+        transcript,
         true,
         false
       );
-      handleSubmit(userMessage).then((r) => console.log(r));
-    } else {
-      console.log("transcript is empty " + transcript);
+      // @ts-ignore
+      console.log(
+        "fingerprint values: " +
+          fingerprint?.values +
+          " fingerprint date: " +
+          fingerprintDate?.getDay() +
+          " today: " +
+          today.getDay()
+      );
+
+      if (fingerprint != null) {
+        //     if (userMessage.text != "Recognizing your voice..." && (fingerprint?.values < 5 || fingerprintDate?.getDay() != today.getDay())) {
+        //         // handleSubmit(userMessage);
+        //     } else {
+        //         alert("You have reached the maximum amount of requests for today. Please try again tomorrow. Sadly, computational power doesn't grow on trees, yet...");
+        //         setIsSupported(false);
+        //     }
+        // } else {
+        handleSubmit(userMessage);
+      }
     }
   };
   const removeLastMessage = () => {
@@ -171,20 +182,24 @@ const Home: React.FC = () => {
   const handleSubmit = async (userMessage: MessageInterface) => {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setTranscript("");
-    console.log("userMessage: " + userMessage.text);
-    const gptResponse = await chatGPT(userMessage.text, sendTime ?? new Date());
-
+    if (!transcript) return;
+    const placeholder: MessageInterface = createMessage(
+      "Thinking",
+      false,
+      false
+    );
+    setMessages((prevMessages) => [...prevMessages, placeholder]);
+    const gptResponse = await chatGPT(transcript);
     // @ts-ignore
     const gptMessage: MessageInterface = createMessage(
-      // @ts-ignore
       gptResponse,
       false,
       false
     );
-    // removeLastMessage()
+    removeLastMessage();
     setMessages((prevMessages) => [...prevMessages, gptMessage]);
     // @ts-ignore
-    // TODO: Use openAI TTS
+    await elevenlabs_request(gptResponse, "PjOz2N4u2h6AEZecKtW6");
 
     generateDeviceFingerprint().then(async (fingerprintValue: string) => {
       const fingerprintDate: Date | null = fingerprint?.date
