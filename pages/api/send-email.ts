@@ -1,5 +1,7 @@
+import { Request, Response } from 'express';
 import nodemailer from 'nodemailer';
-export default async function handler(req, res) {
+
+export default async function handler(req: Request, res: Response) {
     if (req.method === 'POST') {
         // Destructure the data from the request body
         const { fullName, email, message } = req.body;
@@ -9,8 +11,8 @@ export default async function handler(req, res) {
             port: 587,
             secure: false, // true for 465, false for other ports
             auth: {
-                user: process.env.EMAIL, // Your email
-                pass: process.env.PASSWORD, // Your password or App Password if 2FA is enabled
+                user: process.env.CHATGENIE_EMAIL, // Your email
+                pass: process.env.CHATGENIE_PASSWORD, // Your password or App Password if 2FA is enabled
             },
         });
         // Set up email options
