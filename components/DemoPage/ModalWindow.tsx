@@ -1,4 +1,9 @@
-const ModalWindow = ({ isVisible, onClose }) => {
+interface ModalWindowProps {
+    isVisible: boolean;
+    onClose: () => void; // Assuming no arguments are passed to the onClose function
+}
+
+const ModalWindow = ({ isVisible, onClose }: ModalWindowProps) => {
     if (!isVisible) return null;
 
     return (
@@ -32,7 +37,7 @@ const ModalWindow = ({ isVisible, onClose }) => {
                     border-radius: 5px;
                     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
                     width: 100%;
-                    max-width: 400px; // Adjust as needed
+                    max-width: 400px;
                 }
             `}</style>
         </div>
