@@ -1,6 +1,9 @@
 import Navbar from "@/components/navbar/NavBar";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../public/logo-svg.svg";
+import Calendar from "../public/calendar.svg";
+import Dashboard from "../public/dashboard.svg";
+import Voice from "../public/voice.svg";
 import Image from "next/image";
 import Sparkles from "../public/sparkles.svg";
 import LoginButton from "@/components/navbar/LoginButtonNavBar";
@@ -15,15 +18,29 @@ const LandingPage: React.FC = () => {
       .getElementById("targetSection")
       ?.scrollIntoView({ behavior: "smooth" });
   };
+  const [isInView, setIsInView] = useState(false);
+
+  const checkIfInView = () => {
+    const target = document.getElementById("animatedTextSection");
+    if (target) {
+      const position = target.getBoundingClientRect();
+      setIsInView(position.top < window.innerHeight);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", checkIfInView);
+    return () => window.removeEventListener("scroll", checkIfInView);
+  }, []);
   return (
-    <div className="min-h-screen  bg-gradient-to-b from-linear-gradient-start to-linear-gradient-end flex flex-col items-center">
+    <div className="min-h-screen bg-gradient-to-b from-linear-gradient-start to-linear-gradient-end flex flex-col items-center">
       <Navbar />
-      <div className="flex flex-grow flex-col items-center justify-center pt-16 pb-6 rounded-b-[40px] bg-gradient-to-b from-linear-gradient-start to-accent-purple">
+      <div className="flex flex-grow flex-col min-h-screen items-center justify-center pt-10  z-10 rounded-b-[40px] bg-gradient-to-b from-linear-gradient-start to-linear-gradient-end">
         <Image src={Logo} alt="Logo" width={50} height={50} />
 
         <div className="w-1/2">
           <p className="font-inter font-interBold text-6xl mt-6 text-center bg-gradient-to-r from-blue-500 via-white to-accent-purple text-transparent bg-clip-text">
-            Automate boring aspects of small businesses with Chat geanie
+            Automate boring aspects of small businesses with Chat genie
           </p>
           <p className="font-inter font-interRegular text-2xl pt-6 text-center text-white">
             Handle bureaucratic nature of doing small business, and help
@@ -43,10 +60,10 @@ const LandingPage: React.FC = () => {
           />
         </div>
       </div>
-      <div className="flex flex-grow flex-col w-full items-center pt-16 mb-6 rounded-b-[40px] pb-10 bg-gradient-to-b from-linear-gradient-start to-orange-500">
+      <div className="flex flex-grow flex-col w-full items-center pt-16 mb-6 rounded-b-[40px] -mt-40 pb-10 bg-gradient-to-b  from-linear-gradient-start to-linear-gradient-end">
         <div
           id="targetSection"
-          className="pt-6 flex items-center justify-center "
+          className="pt-6 flex items-center justify-center mt-60 mb-60"
         >
           <Image src={Sparkles} alt="Sparkles" width={100} height={100} />
           <div className="w-1/2">
@@ -56,25 +73,42 @@ const LandingPage: React.FC = () => {
             </p>
           </div>
         </div>
-        <div className="pt-10 relative ">
+        <div id="animatedTextSection" className=" relative ">
           {/* Large Text Behind */}
-          <p className="absolute text-6xl w-full font-bold text-white opacity-40 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            Large Text Behind more text more text
+          {/* <p className="absolute  text-center text-6xl w-full font-bold text-white opacity-40 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"> */}
+          <p
+            className={`absolute text-center text-6xl w-full font-bold text-white opacity-40 top-1/2 left-1/2 transform -translate-x-1/2 ${
+              isInView ? "-translate-y-80" : "-translate-y-1/2"
+            } transition-all duration-300 ease-in-out`}
+          >
+            Manage your clientbase with Chat genie
           </p>
 
           {/* Div Elements with Glassmorphism Style */}
           <div className="flex items-center justify-center space-x-10">
-            <div className="w-80 h-64 rounded-2xl border border-white bg-opacity-5 backdrop-blur-sm bg-gray-800 bg-clip-padding backdrop-filter backdrop-blur-xl overflow-hidden">
+            <div className="w-80 h-64 rounded-2xl border border-white bg-opacity-5 backdrop-blur-md bg-gray-100 bg-clip-padding backdrop-filter overflow-hidden">
               <div className="m-4">
+                <Image src={Calendar} alt="Logo" width={50} height={50} />
                 <p className="text-white font-inter font-interRegular text-xl">
-                  Manage
+                  Empower Your Time: Delegate Scheduling, Elevate Success.
                 </p>
               </div>
             </div>
-            <div className="w-80 h-64 rounded-2xl border border-white bg-opacity-5 backdrop-blur-md bg-gray-100 bg-clip-padding backdrop-filter backdrop-blur-xl overflow-hidden">
+            <div className="w-80 h-64 rounded-2xl border border-white bg-opacity-5 backdrop-blur-md bg-gray-100 bg-clip-padding backdrop-filter overflow-hidden">
               <div className="m-4">
                 <p className="text-white font-inter font-interRegular text-xl">
-                  Manage
+                  <Image src={Voice} alt="Logo" width={50} height={50} />
+                  Effortlessly Manage Your Calls with AI: Smart, Simplified,
+                  Streamlined.
+                </p>
+              </div>
+            </div>
+            <div className="w-80 h-64 rounded-2xl border border-white bg-opacity-5 backdrop-blur-md bg-gray-100 bg-clip-padding backdrop-filter overflow-hidden">
+              <div className="m-4">
+                <p className="text-white font-inter font-interRegular text-xl">
+                  <Image src={Dashboard} alt="Logo" width={50} height={50} />
+                  Smart Dashboard: Revolutionizing Business Management with a
+                  Single Click.
                 </p>
               </div>
             </div>

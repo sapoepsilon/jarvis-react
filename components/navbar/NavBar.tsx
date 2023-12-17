@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 const Navbar = () => {
   const router = useRouter();
   return (
-    <nav className="bg-transparent shadow-lg">
+    <nav className="bg-transparent shadow-lg sticky top-0 z-50 bg-opacity-5 backdrop-blur-md bg-gray-100 bg-clip-padding backdrop-filter overflow-hidden">
       <div className="flex justify-between justify-center w-screen px-4">
         <div className="flex justify-between justify-between items-center w-full px-10">
           {/* Logo and navbar items container */}
