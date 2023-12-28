@@ -23,7 +23,7 @@ const LandingPage: React.FC = () => {
 
         <div className="w-1/2">
           <p className="font-inter font-interBold text-6xl mt-6 text-center bg-gradient-to-r from-blue-500 via-white to-accent-purple text-transparent bg-clip-text">
-            Automate boring aspects of small businesses with Chat geanie
+            Automate boring aspects of small businesses with ChatGeanie
           </p>
           <p className="font-inter font-interRegular text-2xl pt-6 text-center text-white">
             Handle bureaucratic nature of doing small business, and help
