@@ -1,3 +1,4 @@
+
 interface ChatGPTRequest {
     input: string;
     intervalSeconds: number;
@@ -7,6 +8,8 @@ interface ChatGPTRequest {
     response?: string;
     error?: string;
   }
+
+  export const maxDuration = 300;
   
   export async function callChatGPT(input: string, intervalSeconds: number): Promise<ChatGPTResponse> {
     try {
