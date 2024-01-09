@@ -17,19 +17,12 @@ const Navbar = () => {
             <Logo />
           </div>
           {/* Centered div for the Navbar items */}
-          <div className="hidden md:flex items-center space-x-1 mx-auto">
-            {/* Use the NavbarItem component for each item */}
-            <NavbarItem href="/features" title="Features" />
-            <NavbarItem href="/services" title="Services" />
-            <NavbarItem href="/pricing" title="Pricing" />
-            <NavbarItem href="/contact" title="Contact us" />
-            <NavbarItem href="LandingPage" title="Landing" />
-          </div>
+
           {/* Login button container */}
           <div className="hidden md:flex items-center space-x-3">
             {/* Use the LoginButton component */}
-            <LoginButton text="Demo" />
             <LoginButton text="Login" />
+            <LoginButton text="Sign Out" onClick={() => sessionStorage.removeItem('OPENAI_API_KEY')} />
           </div>
         </div>
       </div>
