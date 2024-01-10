@@ -37,3 +37,12 @@
     0%, 15% { transform: scale(0.0) }
     50% { transform: scale(1.0) }
 }
+
+@keyframes custom-spin {
+    from { transform: rotateZ(0deg); }
+    to { transform: rotateZ(360deg); }
+  }
+  
+  .custom-spin {
+    animation: custom-spin 10s linear infinite;
+  }
