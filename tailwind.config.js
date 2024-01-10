@@ -8,8 +8,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "jarvis-background": "#43454A",
-        "app-background": "#2B2D30",
+        "jarvis-background": "#D3D3D3",
+        "app-background": "#FFFFFF",
         "gpt-message": "#262529",
         "user-message": "#4991F7",
         "chatgenie-primary": "#010454",

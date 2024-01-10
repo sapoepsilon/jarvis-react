@@ -5,10 +5,9 @@ import ScrollableView from "@/components/DemoPage/ScrollableView";
 import MessageList from "@/components/DemoPage/MessageList";
 import { MessageInterface } from "@/interfaces/Message";
 import Navbar from "@/components/navbar/NavBar";
-import Link from "next/link";
 import TextField from "../components/DemoPage/MicrophoneButton";
 import { callChatGPT } from "@/hooks/fetchChatGPTResponse";
-import { supabase } from '@/utils/supabaseClient'; // Adjust
+import { supabase } from '@/utils/supabaseClient';
 import { Session } from '@supabase/supabase-js';
 const Home: React.FC = () => {
   const handleTranscriptUpdate = (newTranscript: string) => {
@@ -26,18 +25,18 @@ const Home: React.FC = () => {
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
     };
-  
+
     fetchSession();
-  
+
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
-  
+
     return () => {
       authListener?.subscription.unsubscribe();
     };
   }, []);
-  
+
 
   useEffect(() => {
     const SpeechRecognition =
@@ -76,33 +75,13 @@ const Home: React.FC = () => {
       } else {
         alert("Error initializing");
       }
-    } 
+    }
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
     };
   }, []);
-
-  // const handleMouseDown = () => {
-  //     // setRecognitionDone(false);
-  //     // setTranscript("Recognizing your voice...")
-  //     // if (recognitionRef.current) {
-  //     //     setIsListening(true);
-  //     //     if (isListening) {
-  //     //         return;
-  //     //     }
-  //     //     recognitionRef.current.start();
-  //     // }
-  // };
-
-  // const handleMouseUp = () => {
-  //     if (recognitionRef.current) {
-  //         setIsListening(false);
-  //         recognitionRef.current.stop();
-  //         handleSendClick();
-  //     }
-  // };
 
   const handleClearClick = () => {
     setTranscript("");
@@ -116,48 +95,22 @@ const Home: React.FC = () => {
   };
 
   const handleSendClick = () => {
-    // if (
-    //   transcript != "Recognizing your voice..." &&
-    //   transcript != "" &&
-    //   // @ts-ignore
-    //   fingerprint?.values < 5
-    // ) {
-    //   playSound();
-    // }
-    // let fingerprintDate = fingerprint?.date ? fingerprint.date : null;
     if (transcript.trim()) {
       const userMessage: MessageInterface = createMessage(
         transcript,
         true,
         false
       );
-      // @ts-ignore
-      // console.log(
-      //   "fingerprint values: " +
-      //     fingerprint?.values +
-      //     " fingerprint date: " +
-      //     fingerprintDate?.getDay() +
-      //     " today: " +
-      //     today.getDay()
-      // );
-
-      // if (fingerprint != null) {
-        //     if (userMessage.text != "Recognizing your voice..." && (fingerprint?.values < 5 || fingerprintDate?.getDay() != today.getDay())) {
-        //         // handleSubmit(userMessage);
-        //     } else {
-        //         alert("You have reached the maximum amount of requests for today. Please try again tomorrow. Sadly, computational power doesn't grow on trees, yet...");
-        //         setIsSupported(false);
-        //     }
-        // } else {
-        console.log("user message: " + userMessage.text);
-        handleSubmit(userMessage);
-      }
-    // }
-
+      console.log("user message: " + userMessage.text);
+      handleSubmit(userMessage);
+      setTranscript("");
+    }
   };
+
   const removeLastMessage = () => {
     setMessages(messages.slice(0, -1));
   };
+
   const handleSubmit = async (userMessage: MessageInterface) => {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setTranscript("");
@@ -169,17 +122,16 @@ const Home: React.FC = () => {
     );
     setMessages((prevMessages) => [...prevMessages, placeholder]);
     // @ts-ignore
-    let gptResponse =  ""
+    let gptResponse = ""
     try {
-       const response  = (await callChatGPT(transcript, 1));
-       console.log("response: " + response.response);
-       gptResponse = response.response as string;
+      const response = (await callChatGPT(transcript, 1));
+      console.log("response: " + response.response);
+      gptResponse = response.response as string;
       // Additional code to handle the response
     } catch (error) {
-        // Error handling
-        alert(`An error occurred: ${error}`);
+      // Error handling
+      alert(`An error occurred: ${error}`);
     }
-    removeLastMessage();
 
     // @ts-ignore
     const gptMessage: MessageInterface = createMessage(
@@ -209,10 +161,18 @@ const Home: React.FC = () => {
   if (!session) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div>
-          <p className="text-center mb-4">You need to sign in to access this page.</p>
+        <div className="flex flex-col items-center">
+          <img
+            src="https://framerusercontent.com/images/siDJlxSbSVb9JghKi3KVEmcs6nM.png"
+            alt="Vitruvius logo"
+            className="w-64 h-64 mb-4 rounded"
+            style={{ animation: 'spin 10s linear infinite' }}
+          />
+
+          <h1 className="text-center mb-4">You need to sign in to access this page.</h1>
+
           <button
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-4 py-2 bg-black text-white rounded hover:bg-black-600"
             onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}
           >
             Sign in with Google
@@ -220,38 +180,29 @@ const Home: React.FC = () => {
         </div>
       </div>
     );
-  } else {
-  return (
-    <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
-      <Navbar />
-      <ScrollableView>
-        <div className="w-full mb-5">
-          <MessageList messages={messages} interimTranscript={transcript} />
-        </div>
-      </ScrollableView>
-      <div className="flex items-center text-white">
-        {isRecognitionDone || !transcript ? (
-          <div>{transcript}</div>
-        ) : (
-          <>
-            <div>{transcript}</div>
-          </>
-        )}
-      </div>
 
-      <div className="flex flex-wrap items-center justify-between w-full max-w-2xl pt-2 space-x-4">
-        <SendButton onClick={() => handleSendClick()} />
-        <TextField onTranscriptUpdate={handleTranscriptUpdate} />
-        <button
-          className="px-3 py-3 text-white bg-red-500 rounded focus:outline-none"
-          onClick={() => handleClearClick()}
-        >
-          Clear
-        </button>
+    //
+
+
+  } else {
+    return (
+      <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
+        <Navbar />
+        <ScrollableView>
+          <div className="w-full mb-5">
+            <MessageList messages={messages} interimTranscript={transcript} />
+          </div>
+        </ScrollableView>
+
+        <div className="flex flex-wrap items-center justify-between w-full pt-2 space-x-4 px-2 ">
+          <div className="flex-1 min-w-0"> {/* Adjusted line */}
+            <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
+          </div>
+          <SendButton onClick={() => handleSendClick()} />
+        </div>
       </div>
-    </div>
-  );
-        }
+    );
+  }
 };
 
 export default Home;
