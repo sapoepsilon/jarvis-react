@@ -25,18 +25,18 @@ const Home: React.FC = () => {
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
     };
-  
+
     fetchSession();
-  
+
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
-  
+
     return () => {
       authListener?.subscription.unsubscribe();
     };
   }, []);
-  
+
 
   useEffect(() => {
     const SpeechRecognition =
@@ -75,7 +75,7 @@ const Home: React.FC = () => {
       } else {
         alert("Error initializing");
       }
-    } 
+    }
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
@@ -95,30 +95,22 @@ const Home: React.FC = () => {
   };
 
   const handleSendClick = () => {
-    // if (
-    //   transcript != "Recognizing your voice..." &&
-    //   transcript != "" &&
-    //   // @ts-ignore
-    //   fingerprint?.values < 5
-    // ) {
-    //   playSound();
-    // }
-    // let fingerprintDate = fingerprint?.date ? fingerprint.date : null;
     if (transcript.trim()) {
       const userMessage: MessageInterface = createMessage(
         transcript,
         true,
         false
       );
-        console.log("user message: " + userMessage.text);
-        handleSubmit(userMessage);
-      }
-    // }
-
+      console.log("user message: " + userMessage.text);
+      handleSubmit(userMessage);
+      setTranscript("");
+    }
   };
+
   const removeLastMessage = () => {
     setMessages(messages.slice(0, -1));
   };
+
   const handleSubmit = async (userMessage: MessageInterface) => {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setTranscript("");
@@ -130,17 +122,16 @@ const Home: React.FC = () => {
     );
     setMessages((prevMessages) => [...prevMessages, placeholder]);
     // @ts-ignore
-    let gptResponse =  ""
+    let gptResponse = ""
     try {
-       const response  = (await callChatGPT(transcript, 1));
-       console.log("response: " + response.response);
-       gptResponse = response.response as string;
+      const response = (await callChatGPT(transcript, 1));
+      console.log("response: " + response.response);
+      gptResponse = response.response as string;
       // Additional code to handle the response
     } catch (error) {
-        // Error handling
-        alert(`An error occurred: ${error}`);
+      // Error handling
+      alert(`An error occurred: ${error}`);
     }
-    removeLastMessage();
 
     // @ts-ignore
     const gptMessage: MessageInterface = createMessage(
@@ -167,57 +158,51 @@ const Home: React.FC = () => {
   typeof navigator !== "undefined" &&
     Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 
-  if (!session) {
+  // if (!session) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <div className="flex flex-col items-center">
+  //         <img
+  //           src="https://framerusercontent.com/images/siDJlxSbSVb9JghKi3KVEmcs6nM.png"
+  //           alt="Vitruvius logo"
+  //           className="w-64 h-64 mb-4 rounded"
+  //           style={{ animation: 'spin 10s linear infinite' }}
+  //         />
+
+  //         <h1 className="text-center mb-4">You need to sign in to access this page.</h1>
+
+  //         <button
+  //           className="px-4 py-2 bg-black text-white rounded hover:bg-black-600"
+  //           onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}
+  //         >
+  //           Sign in with Google
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+
+  //   //
+
+
+  // } else {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="flex flex-col items-center">
-          <img 
-            src="https://framerusercontent.com/images/siDJlxSbSVb9JghKi3KVEmcs6nM.png" // Replace with your image path
-            alt="Vitruvius logo"
-            className="w-64 h-64 mb-4 rounded custom-spin"
-          />
-    
-          <h1 className="text-center mb-4">You need to sign in to access this page.</h1>
-    
-          <button
-            className="px-4 py-2 bg-black text-white rounded hover:bg-black-600"
-            onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}
-          >
-            Sign in with Google
-          </button>
+      <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
+        <Navbar />
+        <ScrollableView>
+          <div className="w-full mb-5">
+            <MessageList messages={messages} interimTranscript={transcript} />
+          </div>
+        </ScrollableView>
+
+        <div className="flex flex-wrap items-center justify-between w-full pt-2 space-x-4 px-2 ">
+          <div className="flex-1 min-w-0"> {/* Adjusted line */}
+            <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
+          </div>
+          <SendButton onClick={() => handleSendClick()} />
         </div>
       </div>
     );
-    
-    //
-    
-    
-  } else {
-  return (
-    <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
-      <Navbar />
-      <ScrollableView>
-        <div className="w-full mb-5">
-          <MessageList messages={messages} interimTranscript={transcript} />
-        </div>
-      </ScrollableView>
-      <div className="flex items-center text-white">
-        {isRecognitionDone || !transcript ? (
-          <div>{transcript}</div>
-        ) : (
-          <>
-            <div>{transcript}</div>
-          </>
-        )}
-      </div>
-
-      <div className="flex flex-wrap items-center justify-between w-full pt-2 space-x-4 px-2 ">
-        <TextField onTranscriptUpdate={handleTranscriptUpdate} />
-        <SendButton onClick={() => handleSendClick()} />
-      </div>
-    </div>
-  );
-        }
+  // }
 };
 
 export default Home;
