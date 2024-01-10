@@ -158,33 +158,33 @@ const Home: React.FC = () => {
   typeof navigator !== "undefined" &&
     Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 
-  // if (!session) {
-  //   return (
-  //     <div className="flex justify-center items-center h-screen">
-  //       <div className="flex flex-col items-center">
-  //         <img
-  //           src="https://framerusercontent.com/images/siDJlxSbSVb9JghKi3KVEmcs6nM.png"
-  //           alt="Vitruvius logo"
-  //           className="w-64 h-64 mb-4 rounded"
-  //           style={{ animation: 'spin 10s linear infinite' }}
-  //         />
+  if (!session) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="flex flex-col items-center">
+          <img
+            src="https://framerusercontent.com/images/siDJlxSbSVb9JghKi3KVEmcs6nM.png"
+            alt="Vitruvius logo"
+            className="w-64 h-64 mb-4 rounded"
+            style={{ animation: 'spin 10s linear infinite' }}
+          />
 
-  //         <h1 className="text-center mb-4">You need to sign in to access this page.</h1>
+          <h1 className="text-center mb-4">You need to sign in to access this page.</h1>
 
-  //         <button
-  //           className="px-4 py-2 bg-black text-white rounded hover:bg-black-600"
-  //           onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}
-  //         >
-  //           Sign in with Google
-  //         </button>
-  //       </div>
-  //     </div>
-  //   );
+          <button
+            className="px-4 py-2 bg-black text-white rounded hover:bg-black-600"
+            onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}
+          >
+            Sign in with Google
+          </button>
+        </div>
+      </div>
+    );
 
-  //   //
+    //
 
 
-  // } else {
+  } else {
     return (
       <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
         <Navbar />
@@ -202,7 +202,7 @@ const Home: React.FC = () => {
         </div>
       </div>
     );
-  // }
+  }
 };
 
 export default Home;
