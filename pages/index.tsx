@@ -5,10 +5,9 @@ import ScrollableView from "@/components/DemoPage/ScrollableView";
 import MessageList from "@/components/DemoPage/MessageList";
 import { MessageInterface } from "@/interfaces/Message";
 import Navbar from "@/components/navbar/NavBar";
-import Link from "next/link";
 import TextField from "../components/DemoPage/MicrophoneButton";
 import { callChatGPT } from "@/hooks/fetchChatGPTResponse";
-import { supabase } from '@/utils/supabaseClient'; // Adjust
+import { supabase } from '@/utils/supabaseClient';
 import { Session } from '@supabase/supabase-js';
 const Home: React.FC = () => {
   const handleTranscriptUpdate = (newTranscript: string) => {
@@ -84,26 +83,6 @@ const Home: React.FC = () => {
     };
   }, []);
 
-  // const handleMouseDown = () => {
-  //     // setRecognitionDone(false);
-  //     // setTranscript("Recognizing your voice...")
-  //     // if (recognitionRef.current) {
-  //     //     setIsListening(true);
-  //     //     if (isListening) {
-  //     //         return;
-  //     //     }
-  //     //     recognitionRef.current.start();
-  //     // }
-  // };
-
-  // const handleMouseUp = () => {
-  //     if (recognitionRef.current) {
-  //         setIsListening(false);
-  //         recognitionRef.current.stop();
-  //         handleSendClick();
-  //     }
-  // };
-
   const handleClearClick = () => {
     setTranscript("");
     console.log("transcript cleared" + transcript);
@@ -131,24 +110,6 @@ const Home: React.FC = () => {
         true,
         false
       );
-      // @ts-ignore
-      // console.log(
-      //   "fingerprint values: " +
-      //     fingerprint?.values +
-      //     " fingerprint date: " +
-      //     fingerprintDate?.getDay() +
-      //     " today: " +
-      //     today.getDay()
-      // );
-
-      // if (fingerprint != null) {
-        //     if (userMessage.text != "Recognizing your voice..." && (fingerprint?.values < 5 || fingerprintDate?.getDay() != today.getDay())) {
-        //         // handleSubmit(userMessage);
-        //     } else {
-        //         alert("You have reached the maximum amount of requests for today. Please try again tomorrow. Sadly, computational power doesn't grow on trees, yet...");
-        //         setIsSupported(false);
-        //     }
-        // } else {
         console.log("user message: " + userMessage.text);
         handleSubmit(userMessage);
       }
@@ -209,10 +170,17 @@ const Home: React.FC = () => {
   if (!session) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div>
-          <p className="text-center mb-4">You need to sign in to access this page.</p>
+        <div className="flex flex-col items-center">
+          <img 
+            src="https://framerusercontent.com/images/siDJlxSbSVb9JghKi3KVEmcs6nM.png" // Replace with your image path
+            alt="Vitruvius logo"
+            className="w-64 h-64 mb-4 rounded custom-spin"
+          />
+    
+          <h1 className="text-center mb-4">You need to sign in to access this page.</h1>
+    
           <button
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-4 py-2 bg-black text-white rounded hover:bg-black-600"
             onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}
           >
             Sign in with Google
@@ -220,6 +188,10 @@ const Home: React.FC = () => {
         </div>
       </div>
     );
+    
+    //
+    
+    
   } else {
   return (
     <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
@@ -239,15 +211,9 @@ const Home: React.FC = () => {
         )}
       </div>
 
-      <div className="flex flex-wrap items-center justify-between w-full max-w-2xl pt-2 space-x-4">
-        <SendButton onClick={() => handleSendClick()} />
+      <div className="flex flex-wrap items-center justify-between w-full pt-2 space-x-4 px-2 ">
         <TextField onTranscriptUpdate={handleTranscriptUpdate} />
-        <button
-          className="px-3 py-3 text-white bg-red-500 rounded focus:outline-none"
-          onClick={() => handleClearClick()}
-        >
-          Clear
-        </button>
+        <SendButton onClick={() => handleSendClick()} />
       </div>
     </div>
   );
