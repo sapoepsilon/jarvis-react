@@ -165,8 +165,7 @@ const Home: React.FC = () => {
           <img
             src="https://framerusercontent.com/images/siDJlxSbSVb9JghKi3KVEmcs6nM.png"
             alt="Vitruvius logo"
-            className="w-64 h-64 mb-4 rounded"
-            style={{ animation: 'spin 10s linear infinite' }}
+            className="w-64 h-64 mb-4 rounded custom-spin"
           />
 
           <h1 className="text-center mb-4">You need to sign in to access this page.</h1>

@@ -39,8 +39,8 @@
 }
 
 @keyframes custom-spin {
-    from { transform: rotateZ(0deg); }
-    to { transform: rotateZ(360deg); }
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
   }
   
   .custom-spin {
