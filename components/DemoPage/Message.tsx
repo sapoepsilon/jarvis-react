@@ -20,7 +20,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
   return (
     <div className={`w-full ${messageClass} relative`}>
       {!isMe && (
-        <div className="absolute top-1 right-1 z-10 text-gray-500 hover:text-gray-700 cursor-pointer p-1" onClick={handleCopy}>
+        <div className="absolute top-1 right-1 z-10 text-white-500 hover:text-white-700 cursor-pointer p-1" onClick={handleCopy}>
           <FaRegCopy size={20} />
         </div>
       )}

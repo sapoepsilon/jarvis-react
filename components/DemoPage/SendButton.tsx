@@ -4,7 +4,7 @@ interface SendButtonProps {
     onClick: () => void;
 }
 
-const SendButton: React.FC<SendButtonProps> = ({ onClick }) => {
+const VitruviusButton: React.FC<SendButtonProps> = ({ onClick }) => {
     return (
         <button
             onClick={onClick}
@@ -15,4 +15,4 @@ const SendButton: React.FC<SendButtonProps> = ({ onClick }) => {
     );
 };
 
-export default SendButton;
+export default VitruviusButton;
