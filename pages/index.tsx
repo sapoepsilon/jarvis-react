@@ -22,9 +22,12 @@ const Home: React.FC = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [isPageLoaded, setIsPageLoaded] = useState<boolean>(false);
   const placeholders = [
-    "Processing your request, please wait...",
-    "Thinking... This might take a few seconds.",
-    "I'm working on your response, hang tight!",
+    "Got it, give me a second.",
+    "OK give me a second I'm doing your job.",
+    "I'm on it, double and triple checking.",
+    "Got it, be right back.",
+    "I'm on the case, cue elevator music.",
+    "Got it, be patient!."
   ];
 
   const randomPlaceholder = placeholders[Math.floor(Math.random() * placeholders.length)];
@@ -50,7 +53,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     if (session && !isPageLoaded) {
       const introduction: MessageInterface = createMessage(
-        "Hello, I am VIUS. How can I help you today?",
+        `Hello.  I am VIUS, a highly specialized LLM (Large Language Model), conceptualized and built by Vitruvius Design+Build.  I am tailored to provide guidance on luxury home building in Park City, Utah, and the surrounding areas. I am constantly staying up to date with the most current neighborhood architectural design and construction guidelines along with Jordanelle Specially Planned Area guidelines. My job is to make your life easy.  I try to communicate in a fun, technical manner, appropriate for construction professionals, and will sometimes ask for project details when needed to provide precise, customized advice. This approach ensures that my assistance is highly relevant, detailed, and tailored to each unique construction project.  All information that I provide is to be used as guidance only.\n\n   &nbsp;  \n\nHow can I help you?`,
         false,
         false
       );
@@ -58,7 +61,7 @@ const Home: React.FC = () => {
       setIsPageLoaded(true);
     }
   }, [session]);
-
+  
 
   useEffect(() => {
     const SpeechRecognition =
