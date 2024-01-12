@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import SendButton from "../components/DemoPage/SendButton";
+import VitruviusButton from "../components/DemoPage/SendButton";
 import "tailwindcss/tailwind.css";
 import ScrollableView from "@/components/DemoPage/ScrollableView";
 import MessageList from "@/components/DemoPage/MessageList";
@@ -17,7 +17,7 @@ const Home: React.FC = () => {
   const [transcript, setTranscript] = useState<string>("");
   const [messages, setMessages] = useState<MessageInterface[]>([]);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const [isRecognitionDone, setRecognitionDone] = useState(false);
+  const [isBeingProcessed, setPreccessedDone] = useState(true);
   const today: Date = new Date();
   const [session, setSession] = useState<Session | null>(null);
   useEffect(() => {
@@ -51,23 +51,6 @@ const Home: React.FC = () => {
 
         let interimTranscript = "";
         let eachTranscript = "";
-        recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
-          setRecognitionDone(true);
-
-          for (let i = event.resultIndex; i < event.results.length; i++) {
-            const transcript = event.results[i][0].transcript;
-            if (!event.results[i].isFinal) {
-              eachTranscript += transcript;
-              setTranscript(interimTranscript + eachTranscript);
-              console.log("trascript is set in is Final else");
-            } else {
-              interimTranscript += transcript;
-              setTranscript(interimTranscript);
-              console.log("ELSE");
-            }
-          }
-          eachTranscript = "";
-        };
         recognitionRef.current.onend = () => {
           console.log("recognition ended");
           setTranscript(interimTranscript);
@@ -83,12 +66,6 @@ const Home: React.FC = () => {
     };
   }, []);
 
-  const handleClearClick = () => {
-    setTranscript("");
-    console.log("transcript cleared" + transcript);
-    setTranscript("");
-  };
-
   const playSound = () => {
     const audio = new Audio("/bell.wav");
     audio.play().then((r) => console.log("sound played"));
@@ -101,6 +78,7 @@ const Home: React.FC = () => {
         true,
         false
       );
+      setPreccessedDone(false);
       console.log("user message: " + userMessage.text);
       handleSubmit(userMessage);
       setTranscript("");
@@ -140,7 +118,9 @@ const Home: React.FC = () => {
       false,
       false
     );
+    playSound();
     setMessages((prevMessages) => [...prevMessages, gptMessage]);
+    setPreccessedDone(true);
   };
 
   function createMessage(
@@ -192,15 +172,26 @@ const Home: React.FC = () => {
             <MessageList messages={messages} interimTranscript={transcript} />
           </div>
         </ScrollableView>
-
-        <div className="flex flex-wrap items-center justify-between w-full pt-2 space-x-4 px-2 ">
-          <div className="flex-1 min-w-0"> {/* Adjusted line */}
-            <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
-          </div>
-          <SendButton onClick={() => handleSendClick()} />
-        </div>
+<div className="flex items-center justify-between w-full pt-2 px-2 ">
+  {!isBeingProcessed ? (
+    <div className="flex flex-1 items-center space-x-4">
+      <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
+      <div className="spinner">
+        <div className="double-bounce1 bg-gray-200"></div>
+        <div className="double-bounce1 bg-gray-900"></div>
+      </div>
+      <VitruviusButton onClick={() => handleSendClick()} />
+    </div>
+  ) : (
+    <div className="flex flex-1 items-center space-x-4">
+      <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
+      <VitruviusButton onClick={() => handleSendClick()} />
+    </div>
+  )}
+</div>
       </div>
     );
+    
   }
 };
 
