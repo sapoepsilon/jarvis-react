@@ -20,6 +20,15 @@ const Home: React.FC = () => {
   const [isBeingProcessed, setPreccessedDone] = useState(true);
   const today: Date = new Date();
   const [session, setSession] = useState<Session | null>(null);
+  const [isPageLoaded, setIsPageLoaded] = useState<boolean>(false);
+  const placeholders = [
+    "Processing your request, please wait...",
+    "Thinking... This might take a few seconds.",
+    "I'm working on your response, hang tight!",
+  ];
+
+  const randomPlaceholder = placeholders[Math.floor(Math.random() * placeholders.length)];
+
   useEffect(() => {
     const fetchSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -32,10 +41,23 @@ const Home: React.FC = () => {
       setSession(session);
     });
 
+
     return () => {
       authListener?.subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (session && !isPageLoaded) {
+      const introduction: MessageInterface = createMessage(
+        "Hello, I am VIUS. How can I help you today?",
+        false,
+        false
+      );
+      setMessages((prevMessages) => [...prevMessages, introduction]);
+      setIsPageLoaded(true);
+    }
+  }, [session]);
 
 
   useEffect(() => {
@@ -94,20 +116,17 @@ const Home: React.FC = () => {
     setTranscript("");
     if (!transcript) return;
     const placeholder: MessageInterface = createMessage(
-      "Thinking. The response might take 60 seconds to generate...",
+      randomPlaceholder,
       false,
       false
     );
     setMessages((prevMessages) => [...prevMessages, placeholder]);
-    // @ts-ignore
     let gptResponse = ""
     try {
       const response = (await callChatGPT(transcript, 1));
       console.log("response: " + response.response);
       gptResponse = response.response as string;
-      // Additional code to handle the response
     } catch (error) {
-      // Error handling
       alert(`An error occurred: ${error}`);
     }
 
@@ -172,26 +191,26 @@ const Home: React.FC = () => {
             <MessageList messages={messages} interimTranscript={transcript} />
           </div>
         </ScrollableView>
-<div className="flex items-center justify-between w-full pt-2 px-2 ">
-  {!isBeingProcessed ? (
-    <div className="flex flex-1 items-center space-x-4">
-      <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
-      <div className="spinner">
-        <div className="double-bounce1 bg-gray-200"></div>
-        <div className="double-bounce1 bg-gray-900"></div>
-      </div>
-      <VitruviusButton onClick={() => handleSendClick()} />
-    </div>
-  ) : (
-    <div className="flex flex-1 items-center space-x-4">
-      <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
-      <VitruviusButton onClick={() => handleSendClick()} />
-    </div>
-  )}
-</div>
+        <div className="flex items-center justify-between w-full pt-2 px-2 ">
+          {!isBeingProcessed ? (
+            <div className="flex flex-1 items-center space-x-4">
+              <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
+              <div className="spinner">
+                <div className="double-bounce1 bg-gray-200"></div>
+                <div className="double-bounce1 bg-gray-900"></div>
+              </div>
+              <VitruviusButton onClick={() => handleSendClick()} />
+            </div>
+          ) : (
+            <div className="flex flex-1 items-center space-x-4">
+              <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
+              <VitruviusButton onClick={() => handleSendClick()} />
+            </div>
+          )}
+        </div>
       </div>
     );
-    
+
   }
 };
 
