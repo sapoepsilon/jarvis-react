@@ -20,6 +20,18 @@ const Home: React.FC = () => {
   const [isBeingProcessed, setPreccessedDone] = useState(true);
   const today: Date = new Date();
   const [session, setSession] = useState<Session | null>(null);
+  const [isPageLoaded, setIsPageLoaded] = useState<boolean>(false);
+  const placeholders = [
+    "Got it, give me a second.",
+    "OK give me a second I'm doing your job.",
+    "I'm on it, double and triple checking.",
+    "Got it, be right back.",
+    "I'm on the case, cue elevator music.",
+    "Got it, be patient!."
+  ];
+
+  const randomPlaceholder = placeholders[Math.floor(Math.random() * placeholders.length)];
+
   useEffect(() => {
     const fetchSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -32,11 +44,24 @@ const Home: React.FC = () => {
       setSession(session);
     });
 
+
     return () => {
       authListener?.subscription.unsubscribe();
     };
   }, []);
 
+  useEffect(() => {
+    if (session && !isPageLoaded) {
+      const introduction: MessageInterface = createMessage(
+        `Hello.  I am VIUS, a highly specialized LLM (Large Language Model), conceptualized and built by Vitruvius Design+Build.  I am tailored to provide guidance on luxury home building in Park City, Utah, and the surrounding areas. I am constantly staying up to date with the most current neighborhood architectural design and construction guidelines along with Jordanelle Specially Planned Area guidelines. My job is to make your life easy.  I try to communicate in a fun, technical manner, appropriate for construction professionals, and will sometimes ask for project details when needed to provide precise, customized advice. This approach ensures that my assistance is highly relevant, detailed, and tailored to each unique construction project.  All information that I provide is to be used as guidance only.\n\n   &nbsp;  \n\nHow can I help you?`,
+        false,
+        false
+      );
+      setMessages((prevMessages) => [...prevMessages, introduction]);
+      setIsPageLoaded(true);
+    }
+  }, [session]);
+  
 
   useEffect(() => {
     const SpeechRecognition =
@@ -94,20 +119,17 @@ const Home: React.FC = () => {
     setTranscript("");
     if (!transcript) return;
     const placeholder: MessageInterface = createMessage(
-      "Thinking. The response might take 60 seconds to generate...",
+      randomPlaceholder,
       false,
       false
     );
     setMessages((prevMessages) => [...prevMessages, placeholder]);
-    // @ts-ignore
     let gptResponse = ""
     try {
       const response = (await callChatGPT(transcript, 1));
       console.log("response: " + response.response);
       gptResponse = response.response as string;
-      // Additional code to handle the response
     } catch (error) {
-      // Error handling
       alert(`An error occurred: ${error}`);
     }
 
@@ -172,26 +194,26 @@ const Home: React.FC = () => {
             <MessageList messages={messages} interimTranscript={transcript} />
           </div>
         </ScrollableView>
-<div className="flex items-center justify-between w-full pt-2 px-2 ">
-  {!isBeingProcessed ? (
-    <div className="flex flex-1 items-center space-x-4">
-      <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
-      <div className="spinner">
-        <div className="double-bounce1 bg-gray-200"></div>
-        <div className="double-bounce1 bg-gray-900"></div>
-      </div>
-      <VitruviusButton onClick={() => handleSendClick()} />
-    </div>
-  ) : (
-    <div className="flex flex-1 items-center space-x-4">
-      <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
-      <VitruviusButton onClick={() => handleSendClick()} />
-    </div>
-  )}
-</div>
+        <div className="flex items-center justify-between w-full pt-2 px-2 ">
+          {!isBeingProcessed ? (
+            <div className="flex flex-1 items-center space-x-4">
+              <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
+              <div className="spinner">
+                <div className="double-bounce1 bg-gray-200"></div>
+                <div className="double-bounce1 bg-gray-900"></div>
+              </div>
+              <VitruviusButton onClick={() => handleSendClick()} />
+            </div>
+          ) : (
+            <div className="flex flex-1 items-center space-x-4">
+              <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
+              <VitruviusButton onClick={() => handleSendClick()} />
+            </div>
+          )}
+        </div>
       </div>
     );
-    
+
   }
 };
 

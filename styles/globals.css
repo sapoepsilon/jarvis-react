@@ -58,3 +58,51 @@ textarea:focus {
   .custom-spin {
     animation: custom-spin 10s linear infinite;
   }
+
+.flip-on-hover:hover {
+  transform: rotateY(180deg);
+}
+
+  #beta-div {
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.logo-hover-effect:hover #beta-div {
+    transform: rotateY(180deg);
+}
+
+
+.logoBackgroundMobile::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('https://framerusercontent.com/images/siDJlxSbSVb9JghKi3KVEmcs6nM.png');
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.3;
+  z-index: -1;
+}
+
+.logoBackground::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('https://framerusercontent.com/images/siDJlxSbSVb9JghKi3KVEmcs6nM.png');
+  background-size: 20%;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.3;
+  z-index: -1;
+}
+
+.logoBackground {
+  position: relative;
+}
