@@ -17,11 +17,11 @@ const HomeSection: React.FC = () => {
 
           <Image  src={Logo} alt="Logo" width={50} height={50} />
           <div className="w-1/2">
-            <p className="font-inter font-interBold lg:text-6xl sm:text-lg mt-6 mb-2 text-center bg-gradient-to-r from-blue-500 via-black to-accent-purple text-transparent bg-clip-text">
+            <p className="font-inter font-interBold lg:text-6xl sm:text-lg mt-6 mb-2 text-center bg-gradient-to-r from-blue-500 via-white to-accent-purple text-transparent bg-clip-text">
               Automate scheduling of your business
             </p>
-              <p className="font-inter font-interRegular text-2xl pt-6 text-center text-black">
-              <span className="bg-white rounded p-2">
+              <p className="font-inter font-interRegular text-2xl pt-6 text-center text-white">
+              <span className="bg-accent-purple bg-opacity-25 rounded p-2">
                 Handle bureaucratic nature of doing small business, and help customer facing side of business AI
               </span>
               </p>

@@ -18,13 +18,14 @@ const WavingGrid: React.FC<WavingGridProps> = ({ className }) => {
     useEffect(() => {
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setClearColor(0x000000, 1); // Set the background to pitch black
         const scene = new THREE.Scene();
 
         renderer.setSize(window.innerWidth, window.innerHeight);
         mountRef.current?.appendChild(renderer.domElement);
 
-        const gridSize = 50;
-        const gridSpacing = 0.5;
+        const gridSize = 200;
+        const gridSpacing = 0.1;
 
         points = [];
         for (let i = 0; i < gridSize; i++) {
@@ -39,7 +40,7 @@ const WavingGrid: React.FC<WavingGridProps> = ({ className }) => {
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
 
         // Initialize material here
-        material = new THREE.PointsMaterial({ color: 0xff0000, size: 0.1 });
+        material = new THREE.PointsMaterial({ color: 0xff0000, size: 0.06 });
         grid = new THREE.Points(geometry, material);
         scene.add(grid);
 
@@ -73,8 +74,33 @@ const WavingGrid: React.FC<WavingGridProps> = ({ className }) => {
 
         // Update color based on scroll
         const color = new THREE.Color(0xff0000);
-        color.offsetHSL(scrollY / 50, 0, 0);
+        color.offsetHSL(scrollY / 200, 0, 0);
         material.color = color;
+    }, [scrollY]);
+
+    useEffect(() => {
+        const onMouseMove = (event: MouseEvent) => {
+            const { clientX, clientY } = event;
+            const mouseX = (clientX / window.innerWidth) * 2 - 1;
+            const mouseY = -(clientY / window.innerHeight) * 2 + 1;
+
+            // Update grid z positions based on mouse position
+            for (let i = 0; i < points.length; i++) {
+                const x = points[i].x;
+                const y = points[i].y;
+                const distanceToMouse = Math.sqrt(Math.pow(x - mouseX * 5, 2) + Math.pow(y - mouseY * 5, 2));
+                const z = Math.sin(distanceToMouse * 0.09 + (scrollY * 0.2)) * 90;
+                points[i].z = z;
+            }
+            grid.geometry.setFromPoints(points);
+            grid.geometry.attributes.position.needsUpdate = true;
+        };
+
+        window.addEventListener('mousemove', onMouseMove);
+
+        return () => {
+            window.removeEventListener('mousemove', onMouseMove);
+        };
     }, [scrollY]);
 
     useEffect(() => {

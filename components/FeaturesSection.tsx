@@ -62,19 +62,19 @@ const Features: React.FC = () => {
     }, []);
 
     return (
-        <section id="features" className="h-screen w-full bg-transparent">
+        <section id="features" className="h-screen w-full bg-black">
             <div className="flex flex-grow flex-col w-full items-center bg-opacity-0 pt-16 mb-6 rounded-b-[40px] pb-10 bg-transparent">
                 <div className="pt-6 flex items-center justify-center mt-10 mb-60 bg-transparent">
                     <Image src={Sparkles} alt="Sparkles" width={100} height={100} />
                     <div className="w-1/2 bg-transparent">
-                        <p className="font-inter font-interRegular text-2xl mt-6 text-center text-black ml-4">
+                        <p className="font-inter font-interRegular text-2xl mt-6 text-center text-white ml-4">
                             Shape your success with our AI-powered tool, customize it to fit
                             seamlessly into your business vision.
                         </p>
                     </div>
                 </div>
                 <div id="animatedTextSection" className="relative bg-transparent">
-                    <p className={`absolute text-center text-6xl w-full font-bold bg-gradient-to-r from-blue-500 via-black to-accent-purple bg-clip-text opacity-80 top-1/2 left-1/2 transform -translate-x-1/2 ${isInView ? "-translate-y-80" : "-translate-y-1/2"} transition-all duration-700 ease-in-out`}>
+                    <p className={`absolute text-center text-6xl w-full font-bold text-white bg-clip-text opacity-80 top-1/2 left-1/2 transform -translate-x-1/2 ${isInView ? "-translate-y-80" : "-translate-y-1/2"} transition-all duration-700 ease-in-out`}>
                         Manage your client base with Chat genie
                     </p>
                     <div className="flex items-center justify-center space-x-10 bg-transparent">

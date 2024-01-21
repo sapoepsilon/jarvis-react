@@ -35,13 +35,13 @@ const LandingPage: React.FC = () => {
       <Navbar />
       <section
         id="home"
-        className="flex flex-grow flex-col min-h-screen w-full -mt-20"
+        className="flex flex-grow flex-col min-h-screen w-full-mt-20"
       >
         <div className="flex flex-grow flex-col w-full min-h-screen items-center justify-center z-10 rounded-b-[40px] bg-gradient-to-b from-linear-gradient-start to-linear-gradient-end">
           <Image src={Logo} alt="Logo" width={50} height={50} />
 
           <div className="w-1/2">
-            <p className="font-inter font-interBold text-6xl mt-6 text-center bg-gradient-to-r from-blue-500 via-white to-accent-purple text-transparent bg-clip-text">
+            <p className="font-inter font-interBold text-6xl mt-6 text-center bg-gradient-to-r from-blue-500 to-accent-purple text-transparent bg-clip-text">
               Automate boring aspects of small businesses with Chat genie
             </p>
             <p className="font-inter font-interRegular text-2xl pt-6 text-center text-white">
