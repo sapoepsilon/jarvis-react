@@ -137,7 +137,6 @@ const Home: React.FC = () => {
     let gptResponse = ""
     try {
       const response = (await callChatGPT(transcript, 1, assistant.code));
-      console.log("response: " + response.response);
       gptResponse = response.response as string;
     } catch (error) {
       alert(`An error occurred: ${error}`);

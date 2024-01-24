@@ -9,7 +9,7 @@ type NavbarProps = {
   onSidebarClick: () => void;
 };
 
-const Navbar:React.FC<NavbarProps> = ({ onSidebarClick }) => { // Accept the prop here
+const Navbar:React.FC<NavbarProps> = ({ onSidebarClick }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 

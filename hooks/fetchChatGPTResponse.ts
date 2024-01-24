@@ -15,7 +15,6 @@ export const maxDuration = 300;
 export async function callChatGPT(input: string, intervalSeconds: number, assistant_id: string): Promise<ChatGPTResponse> {
   try {
     const apiEndpoint = '/api/chatGPT';
-    console.log("assistant_id: " + assistant_id);
     const payload: ChatGPTRequest = { input, intervalSeconds, assistant_id };
     const response = await fetch(apiEndpoint, {
       method: 'POST',

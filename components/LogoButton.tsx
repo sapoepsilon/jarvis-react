@@ -5,9 +5,9 @@ export const LogoButton = () => {
     <div className="relative h-full w-full">
       <a className="block h-full w-full rounded-lg shadow-lg bg-black hover:bg-opacity-90">
         <Image
-          src="/BG.png"  // Update this line with your local image path
-          layout="fill"
-          objectFit="cover"
+          src="/BG.png"
+          fill={true}
+          style={{ objectFit: "cover" }}
           className="rounded-lg"
           alt="Your Image Description"
         />
