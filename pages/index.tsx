@@ -9,6 +9,8 @@ import TextField from "../components/DemoPage/MicrophoneButton";
 import { callChatGPT } from "@/hooks/fetchChatGPTResponse";
 import { supabase } from '@/utils/supabaseClient';
 import { Session } from '@supabase/supabase-js';
+import Sidebar from "@/components/sidebar/Sidebar";
+import { IVIUSAssistant, VIUSAssistant } from "@/constants/VIUSAssistant";
 const Home: React.FC = () => {
   const handleTranscriptUpdate = (newTranscript: string) => {
     setTranscript(newTranscript ?? "");
@@ -18,7 +20,6 @@ const Home: React.FC = () => {
   const [messages, setMessages] = useState<MessageInterface[]>([]);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const [isBeingProcessed, setPreccessedDone] = useState(true);
-  const today: Date = new Date();
   const [session, setSession] = useState<Session | null>(null);
   const [isPageLoaded, setIsPageLoaded] = useState<boolean>(false);
   const placeholders = [
@@ -27,10 +28,21 @@ const Home: React.FC = () => {
     "I'm on it, double and triple checking.",
     "Got it, be right back.",
     "I'm on the case, cue elevator music.",
-    "Got it, be patient!."
+    "Got it, be patient!"
   ];
 
   const randomPlaceholder = placeholders[Math.floor(Math.random() * placeholders.length)];
+  const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false);
+  const toggleSidebar = () => {
+    console.log("toggleSidebar");
+    setIsSidebarVisible(!isSidebarVisible);
+  };
+
+  const [assistant, setAssistant] = useState<IVIUSAssistant>(VIUSAssistant.skyridge());
+
+  const onAssistantSelect = (assistantFunc: () => IVIUSAssistant) => {
+    setAssistant(assistantFunc());
+  };
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -43,7 +55,6 @@ const Home: React.FC = () => {
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
-
 
     return () => {
       authListener?.subscription.unsubscribe();
@@ -61,7 +72,6 @@ const Home: React.FC = () => {
       setIsPageLoaded(true);
     }
   }, [session]);
-  
 
   useEffect(() => {
     const SpeechRecognition =
@@ -126,7 +136,7 @@ const Home: React.FC = () => {
     setMessages((prevMessages) => [...prevMessages, placeholder]);
     let gptResponse = ""
     try {
-      const response = (await callChatGPT(transcript, 1));
+      const response = (await callChatGPT(transcript, 1, assistant.code));
       console.log("response: " + response.response);
       gptResponse = response.response as string;
     } catch (error) {
@@ -182,38 +192,41 @@ const Home: React.FC = () => {
       </div>
     );
 
-    //
-
-
   } else {
     return (
-      <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
-        <Navbar />
-        <ScrollableView>
-          <div className="w-full mb-5">
-            <MessageList messages={messages} interimTranscript={transcript} />
-          </div>
-        </ScrollableView>
-        <div className="flex items-center justify-between w-full pt-2 px-2 ">
-          {!isBeingProcessed ? (
-            <div className="flex flex-1 items-center space-x-4">
-              <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
-              <div className="spinner">
-                <div className="double-bounce1 bg-gray-200"></div>
-                <div className="double-bounce1 bg-gray-900"></div>
+      <div className="min-h-screen bg-app-background min-w-200">
+        <Navbar onSidebarClick={toggleSidebar} />
+        <div className={`flex ${isSidebarVisible ? 'with-sidebar' : ''}`}>
+          <div className={`sidebar ${isSidebarVisible ? 'sidebar-visible' : ''}`}>
+      <Sidebar onAssistantSelect={onAssistantSelect} />
+                          </div>
+          <div className="main-content">
+            <ScrollableView>
+              <div className="w-full mb-5">
+                <MessageList messages={messages} interimTranscript={transcript} />
               </div>
-              <VitruviusButton onClick={() => handleSendClick()} />
+            </ScrollableView>
+            <div className="flex items-center justify-between w-full pt-2 px-2 ">
+              {!isBeingProcessed ? (
+                <div className="flex flex-1 items-center space-x-4">
+                  <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
+                  <div className="spinner">
+                    <div className="double-bounce1 bg-gray-200"></div>
+                    <div className="double-bounce2 bg-gray-900"></div>
+                  </div>
+                  <VitruviusButton onClick={() => handleSendClick()} />
+                </div>
+              ) : (
+                <div className="flex flex-1 items-center space-x-4">
+                  <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
+                  <VitruviusButton onClick={() => handleSendClick()} />
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="flex flex-1 items-center space-x-4">
-              <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
-              <VitruviusButton onClick={() => handleSendClick()} />
-            </div>
-          )}
+          </div>
         </div>
       </div>
     );
-
   }
 };
 

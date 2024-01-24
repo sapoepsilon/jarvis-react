@@ -1,10 +1,10 @@
 import React from 'react';
-import {MessageInterface as MessageModel} from '../../interfaces/Message';
+import { MessageInterface as MessageModel } from '../../interfaces/Message';
 import ReactMarkdown from 'react-markdown';
 import { FaRegCopy, FaCheck } from 'react-icons/fa';
 
-export  interface MessageProps {
-    message: MessageModel;
+export interface MessageProps {
+  message: MessageModel;
 }
 
 const Message: React.FC<MessageProps> = ({ message }) => {
@@ -12,7 +12,6 @@ const Message: React.FC<MessageProps> = ({ message }) => {
   const messageClass = isMe ? 'text-right' : 'text-left';
   const bgColor = isMe ? 'bg-user-message backdrop-filter backdrop-blur-md' : isInterim ? 'bg-slate-300' : 'bg-slate-950  backdrop-filter backdrop-blur-md bg-opacity-80';
   const textColor = isMe ? 'text-white' : 'text-white';
-
   const [copied, setCopied] = React.useState(false);
 
   const handleCopy = () => {
@@ -31,7 +30,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
           )}
         </div>
       )}
-      <span className={`inline-block rounded-lg px-3 py-2 ${bgColor} ${textColor}`}>
+      <span className={`inline-block rounded-lg px-3 py-2 ${bgColor} ${textColor} text-sm`}>
         <ReactMarkdown>{text}</ReactMarkdown>
       </span>
     </div>

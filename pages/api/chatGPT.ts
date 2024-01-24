@@ -10,15 +10,17 @@ type Run = {
     thread_id: string;
     id: string;
 };
+
 export default async function chatGPT(req: NextApiRequest, res: NextApiResponse) {
     try {
-        const { input, intervalSeconds } = req.body;
-        if (typeof input !== 'string' || typeof intervalSeconds !== 'number') {
-            return res.status(400).json({ error: 'Invalid input or intervalSeconds.' });
+        const { input, intervalSeconds, assistant_id } = req.body;
+
+        if (typeof input !== 'string' || typeof intervalSeconds !== 'number' || typeof assistant_id !== 'string') {
+            return res.status(400).json({ error: 'Invalid input, intervalSeconds, or assistant_id.' });
         }
 
         const run: Run = await openai.beta.threads.createAndRun({
-            assistant_id: "asst_0q6yj9REu4AHbOarDTcDsn8G",
+            assistant_id: assistant_id,
             thread: {
                 messages: [{ role: "user", content: input }],
             },
@@ -36,7 +38,6 @@ export default async function chatGPT(req: NextApiRequest, res: NextApiResponse)
         }
     }
 }
-
 
 const waitForFirstMessage = async (threadId: string, runId: string, intervalSeconds: number): Promise<string | null> => {
     while (true) {
