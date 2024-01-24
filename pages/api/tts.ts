@@ -2,7 +2,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method === 'POST') {
     const startTime = new Date(); // Start time
     try {
@@ -32,7 +35,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const endTime = new Date();
       const timeTaken = endTime.getTime() - startTime.getTime();
       console.log(`Time taken: ${timeTaken}ms`);
-      
     } catch (error) {
       console.error('Error in text-to-speech streaming:', error);
       res.status(500).json({ message: 'Internal Server Error' });

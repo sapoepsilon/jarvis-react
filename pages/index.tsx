@@ -1,49 +1,67 @@
-import React, { useState, useEffect, useRef } from "react";
-import VitruviusButton from "../components/DemoPage/SendButton";
-import "tailwindcss/tailwind.css";
-import ScrollableView from "@/components/DemoPage/ScrollableView";
-import MessageList from "@/components/DemoPage/MessageList";
-import { MessageInterface } from "@/interfaces/Message";
-import Navbar from "@/components/navbar/NavBar";
-import TextField from "../components/DemoPage/MicrophoneButton";
-import { callChatGPT } from "@/hooks/fetchChatGPTResponse";
+import React, { useState, useEffect, useRef } from 'react';
+import VitruviusButton from '../components/DemoPage/SendButton';
+import 'tailwindcss/tailwind.css';
+import ScrollableView from '@/components/DemoPage/ScrollableView';
+import MessageList from '@/components/DemoPage/MessageList';
+import { MessageInterface } from '@/interfaces/Message';
+import Navbar from '@/components/navbar/NavBar';
+import TextField from '../components/DemoPage/MicrophoneButton';
+import { callChatGPT } from '@/hooks/fetchChatGPTResponse';
 import { supabase } from '@/utils/supabaseClient';
 import { Session } from '@supabase/supabase-js';
+import Sidebar from '@/components/sidebar/Sidebar';
+import { IVIUSAssistant, VIUSAssistant } from '@/constants/VIUSAssistant';
 const Home: React.FC = () => {
   const handleTranscriptUpdate = (newTranscript: string) => {
-    setTranscript(newTranscript ?? "");
+    setTranscript(newTranscript ?? '');
   };
 
-  const [transcript, setTranscript] = useState<string>("");
+  const [transcript, setTranscript] = useState<string>('');
   const [messages, setMessages] = useState<MessageInterface[]>([]);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const [isBeingProcessed, setPreccessedDone] = useState(true);
-  const today: Date = new Date();
   const [session, setSession] = useState<Session | null>(null);
   const [isPageLoaded, setIsPageLoaded] = useState<boolean>(false);
   const placeholders = [
-    "Got it, give me a second.",
+    'Got it, give me a second.',
     "OK give me a second I'm doing your job.",
     "I'm on it, double and triple checking.",
-    "Got it, be right back.",
+    'Got it, be right back.',
     "I'm on the case, cue elevator music.",
-    "Got it, be patient!."
+    'Got it, be patient!',
   ];
 
-  const randomPlaceholder = placeholders[Math.floor(Math.random() * placeholders.length)];
+  const randomPlaceholder =
+    placeholders[Math.floor(Math.random() * placeholders.length)];
+  const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false);
+  const toggleSidebar = () => {
+    console.log('toggleSidebar');
+    setIsSidebarVisible(!isSidebarVisible);
+  };
+
+  const [assistant, setAssistant] = useState<IVIUSAssistant>(
+    VIUSAssistant.skyridge(),
+  );
+
+  const onAssistantSelect = (assistantFunc: () => IVIUSAssistant) => {
+    setAssistant(assistantFunc());
+  };
 
   useEffect(() => {
     const fetchSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       setSession(session);
     };
 
     fetchSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setSession(session);
+      },
+    );
 
     return () => {
       authListener?.subscription.unsubscribe();
@@ -55,13 +73,12 @@ const Home: React.FC = () => {
       const introduction: MessageInterface = createMessage(
         `Hello.  I am VIUS, a highly specialized LLM (Large Language Model), conceptualized and built by Vitruvius Design+Build.  I am tailored to provide guidance on luxury home building in Park City, Utah, and the surrounding areas. I am constantly staying up to date with the most current neighborhood architectural design and construction guidelines along with Jordanelle Specially Planned Area guidelines. My job is to make your life easy.  I try to communicate in a fun, technical manner, appropriate for construction professionals, and will sometimes ask for project details when needed to provide precise, customized advice. This approach ensures that my assistance is highly relevant, detailed, and tailored to each unique construction project.  All information that I provide is to be used as guidance only.\n\n   &nbsp;  \n\nHow can I help you?`,
         false,
-        false
+        false,
       );
       setMessages((prevMessages) => [...prevMessages, introduction]);
       setIsPageLoaded(true);
     }
   }, [session]);
-  
 
   useEffect(() => {
     const SpeechRecognition =
@@ -74,14 +91,14 @@ const Home: React.FC = () => {
         recognitionRef.current.continuous = true;
         recognitionRef.current.interimResults = false;
 
-        let interimTranscript = "";
-        let eachTranscript = "";
+        let interimTranscript = '';
+        let eachTranscript = '';
         recognitionRef.current.onend = () => {
-          console.log("recognition ended");
+          console.log('recognition ended');
           setTranscript(interimTranscript);
         };
       } else {
-        alert("Error initializing");
+        alert('Error initializing');
       }
     }
     return () => {
@@ -92,8 +109,8 @@ const Home: React.FC = () => {
   }, []);
 
   const playSound = () => {
-    const audio = new Audio("/bell.wav");
-    audio.play().then((r) => console.log("sound played"));
+    const audio = new Audio('/bell.wav');
+    audio.play().then((r) => console.log('sound played'));
   };
 
   const handleSendClick = () => {
@@ -101,12 +118,12 @@ const Home: React.FC = () => {
       const userMessage: MessageInterface = createMessage(
         transcript,
         true,
-        false
+        false,
       );
       setPreccessedDone(false);
-      console.log("user message: " + userMessage.text);
+      console.log('user message: ' + userMessage.text);
       handleSubmit(userMessage);
-      setTranscript("");
+      setTranscript('');
     }
   };
 
@@ -116,18 +133,17 @@ const Home: React.FC = () => {
 
   const handleSubmit = async (userMessage: MessageInterface) => {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
-    setTranscript("");
+    setTranscript('');
     if (!transcript) return;
     const placeholder: MessageInterface = createMessage(
       randomPlaceholder,
       false,
-      false
+      false,
     );
     setMessages((prevMessages) => [...prevMessages, placeholder]);
-    let gptResponse = ""
+    let gptResponse = '';
     try {
-      const response = (await callChatGPT(transcript, 1));
-      console.log("response: " + response.response);
+      const response = await callChatGPT(transcript, 1, assistant.code);
       gptResponse = response.response as string;
     } catch (error) {
       alert(`An error occurred: ${error}`);
@@ -138,7 +154,7 @@ const Home: React.FC = () => {
       // @ts-ignore
       gptResponse,
       false,
-      false
+      false,
     );
     playSound();
     setMessages((prevMessages) => [...prevMessages, gptMessage]);
@@ -148,7 +164,7 @@ const Home: React.FC = () => {
   function createMessage(
     text: string,
     isMe: boolean,
-    isInterim: boolean
+    isInterim: boolean,
   ): MessageInterface {
     return {
       text,
@@ -157,7 +173,7 @@ const Home: React.FC = () => {
     };
   }
 
-  typeof navigator !== "undefined" &&
+  typeof navigator !== 'undefined' &&
     Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 
   if (!session) {
@@ -170,50 +186,67 @@ const Home: React.FC = () => {
             className="w-64 h-64 mb-4 rounded custom-spin"
           />
 
-          <h1 className="text-center mb-4">You need to sign in to access this page.</h1>
+          <h1 className="text-center mb-4">
+            You need to sign in to access this page.
+          </h1>
 
           <button
             className="px-4 py-2 bg-black text-white rounded hover:bg-black-600"
-            onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}
+            onClick={() =>
+              supabase.auth.signInWithOAuth({ provider: 'google' })
+            }
           >
             Sign in with Google
           </button>
         </div>
       </div>
     );
-
-    //
-
-
   } else {
     return (
-      <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
-        <Navbar />
-        <ScrollableView>
-          <div className="w-full mb-5">
-            <MessageList messages={messages} interimTranscript={transcript} />
+      <div className="min-h-screen bg-app-background min-w-200">
+        <Navbar onSidebarClick={toggleSidebar} />
+        <div className={`flex ${isSidebarVisible ? 'with-sidebar' : ''}`}>
+          <div
+            className={`sidebar ${isSidebarVisible ? 'sidebar-visible' : ''}`}
+          >
+            <Sidebar onAssistantSelect={onAssistantSelect} />
           </div>
-        </ScrollableView>
-        <div className="flex items-center justify-between w-full pt-2 px-2 ">
-          {!isBeingProcessed ? (
-            <div className="flex flex-1 items-center space-x-4">
-              <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
-              <div className="spinner">
-                <div className="double-bounce1 bg-gray-200"></div>
-                <div className="double-bounce1 bg-gray-900"></div>
+          <div className="main-content">
+            <ScrollableView>
+              <div className="w-full mb-5">
+                <MessageList
+                  messages={messages}
+                  interimTranscript={transcript}
+                />
               </div>
-              <VitruviusButton onClick={() => handleSendClick()} />
+            </ScrollableView>
+            <div className="flex items-center justify-between w-full pt-2 px-2 ">
+              {!isBeingProcessed ? (
+                <div className="flex flex-1 items-center space-x-4">
+                  <TextField
+                    onTranscriptUpdate={handleTranscriptUpdate}
+                    onEnterPress={handleSendClick}
+                  />
+                  <div className="spinner">
+                    <div className="double-bounce1 bg-gray-200"></div>
+                    <div className="double-bounce2 bg-gray-900"></div>
+                  </div>
+                  <VitruviusButton onClick={() => handleSendClick()} />
+                </div>
+              ) : (
+                <div className="flex flex-1 items-center space-x-4">
+                  <TextField
+                    onTranscriptUpdate={handleTranscriptUpdate}
+                    onEnterPress={handleSendClick}
+                  />
+                  <VitruviusButton onClick={() => handleSendClick()} />
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="flex flex-1 items-center space-x-4">
-              <TextField onTranscriptUpdate={handleTranscriptUpdate} onEnterPress={handleSendClick} />
-              <VitruviusButton onClick={() => handleSendClick()} />
-            </div>
-          )}
+          </div>
         </div>
       </div>
     );
-
   }
 };
 

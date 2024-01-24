@@ -1,4 +1,8 @@
-async function playAudioFromText(text: string, voice: string = "alloy", sendClickTime: Date): Promise<void> {
+async function playAudioFromText(
+  text: string,
+  voice: string = 'alloy',
+  sendClickTime: Date,
+): Promise<void> {
   const requestStartTime = new Date();
   console.log(`Request start time: ${requestStartTime.toISOString()}`);
 
@@ -9,19 +13,21 @@ async function playAudioFromText(text: string, voice: string = "alloy", sendClic
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ input: text, voice })
+      body: JSON.stringify({ input: text, voice }),
     });
     const fetchEndTime = new Date();
     console.log(`Fetch start time: ${fetchStartTime.toISOString()}`);
     console.log(`Fetch end time: ${fetchEndTime.toISOString()}`);
-    console.log(`Fetch duration: ${fetchEndTime.getTime() - fetchStartTime.getTime()}ms`);
+    console.log(
+      `Fetch duration: ${fetchEndTime.getTime() - fetchStartTime.getTime()}ms`,
+    );
 
     if (!response.ok) {
       throw new Error(`Error from server: ${response.status}`);
     }
 
     if (!window.MediaSource) {
-      console.error("MediaSource API is not available in this browser.");
+      console.error('MediaSource API is not available in this browser.');
       return;
     }
 
@@ -31,15 +37,19 @@ async function playAudioFromText(text: string, voice: string = "alloy", sendClic
 
     // Log when audio starts playing
     audio.addEventListener('play', () => {
-      console.log(`Audio playback started at: ${new Date().getTime() - requestStartTime.getTime()}ms`);
-      console.log(`Send click time: ${new Date().getTime() - sendClickTime.getTime()}ms`);
+      console.log(
+        `Audio playback started at: ${new Date().getTime() - requestStartTime.getTime()}ms`,
+      );
+      console.log(
+        `Send click time: ${new Date().getTime() - sendClickTime.getTime()}ms`,
+      );
     });
 
-    audio.play().catch(e => console.error('Error playing audio:', e));
+    audio.play().catch((e) => console.error('Error playing audio:', e));
 
     mediaSource.onsourceopen = () => {
       const sourceBuffer = mediaSource.addSourceBuffer('audio/mpeg'); // adjust MIME type as needed
-//@ts-ignore
+      //@ts-ignore
       const reader = response.body.getReader();
       const read = () => {
         reader.read().then(({ done, value }) => {
@@ -57,7 +67,7 @@ async function playAudioFromText(text: string, voice: string = "alloy", sendClic
       read(); // Start reading
     };
   } catch (error) {
-    console.error("Error fetching or playing audio:", error);
+    console.error('Error fetching or playing audio:', error);
   }
 }
 

@@ -10,7 +10,8 @@
     "type-check": "tsc --noEmit",
     "export": "next export",
     "predeploy": "npm run build && npm run export",
-    "deploy": "gh-pages -d out"
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
@@ -58,6 +59,7 @@
     "@types/nodemailer": "^6.4.14",
     "@types/react": "^18.2.47",
     "@types/react-speech-recognition": "^3.9.1",
-    "gh-pages": "^5.0.0"
+    "gh-pages": "^5.0.0",
+    "prettier": "3.2.4"
   }
 }

@@ -1,14 +1,14 @@
-import { FC } from 'react'
-import { supabase } from '../utils/supabaseClient'
+import { FC } from 'react';
+import { supabase } from '../utils/supabaseClient';
 
 const handleGoogleLogin = async () => {
-  
   await supabase.auth.signInWithOAuth({
-    provider: 'google', options: {
-      redirectTo: process.env.NEXT_PUBLIC_OAUTH_REDIRECT_URI
-    }
-  })
-}
+    provider: 'google',
+    options: {
+      redirectTo: process.env.NEXT_PUBLIC_OAUTH_REDIRECT_URI,
+    },
+  });
+};
 
 const Auth: FC = () => (
   <div>
@@ -19,6 +19,6 @@ const Auth: FC = () => (
       Sign in with Google
     </button>
   </div>
-)
+);
 
-export default Auth
+export default Auth;

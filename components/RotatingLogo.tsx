@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from "react";
-import Sparkles from "../public/sparkles.svg";
-import Image from "next/image";
+import React, { useRef, useEffect } from 'react';
+import Sparkles from '../public/sparkles.svg';
+import Image from 'next/image';
 
 const RotatingLogo: React.FC = () => {
   const logoRef = useRef<HTMLDivElement>(null);
