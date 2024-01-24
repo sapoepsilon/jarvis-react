@@ -10,30 +10,29 @@
   -webkit-text-fill-color: transparent;
   display: inline-block;
 }
-  
-  .textExit {
-    animation: textExit 0.5s forwards;
+
+.textExit {
+  animation: textExit 0.5s forwards;
+}
+
+@keyframes textEnter {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
   }
-  
-  @keyframes textEnter {
-    from {
-      transform: translateX(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
-  
-  @keyframes textExit {
-    from {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    to {
-      transform: translateX(100%);
-      opacity: 1;
-    }
+}
+
+@keyframes textExit {
+  from {
+    transform: translateX(0);
+    opacity: 1;
   }
-  
+  to {
+    transform: translateX(100%);
+    opacity: 1;
+  }
+}

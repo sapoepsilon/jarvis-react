@@ -1,5 +1,5 @@
 // LoginButton.js
-const { cva } = require("class-variance-authority");
+const { cva } = require('class-variance-authority');
 
 interface LoginButtonProps {
   text: string;
@@ -7,17 +7,17 @@ interface LoginButtonProps {
   textSize?: string;
 }
 
-const LoginButtonStyles = cva("span", {
+const LoginButtonStyles = cva('span', {
   variants: {
     textSize: {
-      sm: ["text-sm"],
-      base: ["text-base"],
-      lg: ["text-lg"],
-      xl: ["text-2xl", "font-bold"],
+      sm: ['text-sm'],
+      base: ['text-base'],
+      lg: ['text-lg'],
+      xl: ['text-2xl', 'font-bold'],
     },
   },
   defaultVariants: {
-    textSize: "base",
+    textSize: 'base',
   },
 });
 

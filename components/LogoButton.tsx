@@ -7,7 +7,7 @@ export const LogoButton = () => {
         <Image
           src="/BG.png"
           fill={true}
-          style={{ objectFit: "cover" }}
+          style={{ objectFit: 'cover' }}
           className="rounded-lg"
           alt="Your Image Description"
         />

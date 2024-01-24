@@ -13,14 +13,13 @@
 }
 
 @keyframes sk-bounce {
-
   0%,
   100% {
-    transform: scale(0.0);
+    transform: scale(0);
   }
 
   50% {
-    transform: scale(1.0);
+    transform: scale(1);
   }
 }
 
@@ -52,11 +51,11 @@ textarea:focus {
   position: absolute;
   top: 0;
   left: 0;
-  animation: sk-bounce 2.0s infinite ease-in-out;
+  animation: sk-bounce 2s infinite ease-in-out;
 }
 
 .double-bounce2 {
-  animation-delay: -1.0s;
+  animation-delay: -1s;
 }
 
 @keyframes custom-spin {
@@ -86,9 +85,8 @@ textarea:focus {
   transform: rotateY(180deg);
 }
 
-
 .logoBackgroundMobile::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -103,7 +101,7 @@ textarea:focus {
 }
 
 .logoBackground::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -138,7 +136,7 @@ textarea:focus {
 
 .main-content {
   flex-grow: 0;
-  transition: width 0.3s; 
+  transition: width 0.3s;
   width: 100%;
 }
 

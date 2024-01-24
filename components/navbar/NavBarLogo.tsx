@@ -1,6 +1,6 @@
-import { useRouter } from "next/router";
-import Image from "next/image";
-import logo from "../../public/BG.png";
+import { useRouter } from 'next/router';
+import Image from 'next/image';
+import logo from '../../public/BG.png';
 
 import { useState } from 'react';
 import styles from '../../styles/Logo.module.css';
@@ -18,11 +18,13 @@ const Logo = () => {
     });
   };
 
-  const imageStyle = hover ? {
-    transform: `scale(3) translate(${mousePosition.x * -0.05}px, ${mousePosition.y * -0.05}px)`,
-  } : {
-    transform: 'scale(1)',
-  };
+  const imageStyle = hover
+    ? {
+        transform: `scale(3) translate(${mousePosition.x * -0.05}px, ${mousePosition.y * -0.05}px)`,
+      }
+    : {
+        transform: 'scale(1)',
+      };
 
   return (
     <div
@@ -31,7 +33,7 @@ const Logo = () => {
       onMouseLeave={() => setHover(false)}
       onMouseMove={handleMouseMove}
       className="relative flex items-center py-4 px-2 cursor-pointer"
-      style={{ width: 70, height: 30, perspective: "100px" }}
+      style={{ width: 70, height: 30, perspective: '100px' }}
     >
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-lg">
         <Image
@@ -43,8 +45,14 @@ const Logo = () => {
           style={imageStyle}
         />
       </div>
-      <div className={`${styles.textBase} absolute top-0 left-0 w-full h-full flex items-center justify-center text-white text-md font-bold`}>
-        {hover ? <div className={styles.textEnter}>AI</div> : <div style={{ textAlign: 'center', fontWeight: 'normal' }}>VIUS</div>}
+      <div
+        className={`${styles.textBase} absolute top-0 left-0 w-full h-full flex items-center justify-center text-white text-md font-bold`}
+      >
+        {hover ? (
+          <div className={styles.textEnter}>AI</div>
+        ) : (
+          <div style={{ textAlign: 'center', fontWeight: 'normal' }}>VIUS</div>
+        )}
       </div>
     </div>
   );
