@@ -69,7 +69,7 @@ Now, the application should be running on `http://localhost:3000/`.
 - `/api/chatGPT.ts`: API for interaction with GPT-4.
 - `/api/elevenlabs.ts`: API for voice to text services.
 - `/api/fingerprint_service.ts`: API for device fingerprinting.
-  
+
 ## Troubleshooting
 
 - Make sure your browser supports SpeechRecognition (Chrome and Safari are supported).

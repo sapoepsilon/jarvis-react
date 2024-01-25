@@ -3,6 +3,7 @@ import Logo from "@/components/navbar/NavBarLogo";
 import LoginButton from "@/components/navbar/LoginButtonNavBar";
 import NavbarItem from "@/components/navbar/NavBarItem";
 import { useRouter } from "next/router";
+import { FaBars } from 'react-icons/fa';
 
 type NavbarProps = {
   className?: string;
@@ -13,13 +14,16 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
   const [activeSection, setActiveSection] = useState<string>("");
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  // Set a default gradient background style
+  const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
+
   const defaultStyle = {
-    background: 'linear-gradient(to right, #3498db, #8e44ad)',
+    background: "linear-gradient(to right, #3498db, #8e44ad)",
   };
   const [gradientStyle, setGradientStyle] = useState(defaultStyle);
 
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleMouseMove = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
     const { clientX, clientY, currentTarget } = event;
     const { top, left, width, height } = currentTarget.getBoundingClientRect();
     const x = (clientX - left) / width;
@@ -37,7 +41,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
     };
 
     checkIfMobile();
-    window.addEventListener('resize', checkIfMobile);
+    window.addEventListener("resize", checkIfMobile);
 
     const handleScroll = () => {
       const sections = ["home", "features", "services", "pricing", "support"];
@@ -69,80 +73,83 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
   };
 
   return (
-      <nav
-          className={`${className} shadow-lg sticky top-0 z-50 bg-opacity-5 backdrop-blur-md bg-gray-100 bg-clip-padding backdrop-filter overflow-hidden`}
-          style={{ ...gradientStyle, height: '50px' }} // Apply dynamic gradient style
-          onMouseMove={handleMouseMove} // Add mouse move event handler
+    <nav
+      className={`md:${className} lg:${className} shadow-lg sticky top-0 z-50 bg-opacity-5 backdrop-blur-md bg-gray-100 bg-clip-padding backdrop-filter overflow-hidden ${isNavbarExpanded ? 'h-auto' : 'h-50px'}`}
+      style={{ ...gradientStyle }} 
+      onMouseMove={handleMouseMove} // Add mouse move event handler
+    >
+      <div
+        className="flex flex-col md:flex-row justify-between w-screen px-4"
       >
-        <div className="flex justify-between w-screen px-4" style={{ height: '50px' }}> {/* Adjusted height for shorter navbar */}
-          <div className="flex justify-between items-center w-full px-10">
-            <div className="flex space-x-7 items-center">
-              <Logo/>
-            </div>
-            <div className="hidden md:flex items-center space-x-1 mx-auto">
-              {["Home", "Features", "Services", "Pricing", "Support"].map(
-                  (item, index) => (
-                      <button
-                          key={index}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            scrollToSection(item.toLowerCase());
-                          }}
-                      >
-                        <NavbarItem
-                            title={item}
-                            isActive={activeSection === item.toLowerCase()}
-                        />
-                      </button>
-                  )
-              )}
-            </div>
+        <div className="flex justify-start md:justify-between items-center w-full px-10">
+          <div className="flex space-x-7 items-center">
             <button
-                className="md:hidden"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="md:hidden"
+              onClick={() => setIsNavbarExpanded(!isNavbarExpanded)}
             >
-              {/* Icon or Text for Menu Toggle */}
+                      <FaBars />
+
             </button>
-            <div className="hidden md:flex items-center space-x-3">
-              <LoginButton text="Demo" />
-              <LoginButton text="Login" />
-            </div>
-            {isDropdownOpen && isMobile && (
-                <div className="absolute w-full bg-white shadow-md md:hidden">
-                  {["Home", "Features", "Services", "Pricing", "Support"].map(
-                      (item, index) => (
-                          <button
-                              key={index}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                scrollToSection(item.toLowerCase());
-                              }}
-                          >
-                            <NavbarItem
-                                title={item}
-                                isActive={activeSection === item.toLowerCase()}
-                            />
-                          </button>
-                      )
-                  )}
-                </div>
+            <Logo />
+          </div>
+          <div className={`flex flex-col items-center space-y-1 mx-auto ${isNavbarExpanded ? 'block' : 'hidden'}`}>
+            {["Home", "Features", "Services", "Pricing", "Support"].map(
+              (item, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection(item.toLowerCase());
+                  }}
+                >
+                  <NavbarItem
+                    title={item}
+                    isActive={activeSection === item.toLowerCase()}
+                  />
+                </button>
+              ),
             )}
           </div>
-          {isDropdownOpen && (
-              <div className="absolute w-full bg-white shadow-md md:hidden">
-                {["Home", "Features", "Services", "Pricing", "Support"].map(
-                    (item, index) => (
-                        <NavbarItem
-                            key={index}
-                            title={item}
-                            isActive={activeSection === item.toLowerCase()}
-                        />
-                    )
-                )}
-              </div>
+          <div className="hidden md:flex items-center space-x-3">
+            <LoginButton text="Demo" />
+            <LoginButton text="Login" onClick={() => router.push("/Login")} />
+          </div>
+          {isDropdownOpen && isMobile && (
+            <div className="absolute w-full bg-white shadow-md md:hidden">
+              {["Home", "Features", "Services", "Pricing", "Support"].map(
+                (item, index) => (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(item.toLowerCase());
+                    }}
+                  >
+                    <NavbarItem
+                      title={item}
+                      isActive={activeSection === item.toLowerCase()}
+                    />
+                  </button>
+                ),
+              )}
+            </div>
           )}
         </div>
-      </nav>
+        {isDropdownOpen && (
+          <div className="absolute w-full bg-white shadow-md md:hidden">
+            {["Home", "Features", "Services", "Pricing", "Support"].map(
+              (item, index) => (
+                <NavbarItem
+                  key={index}
+                  title={item}
+                  isActive={activeSection === item.toLowerCase()}
+                />
+              ),
+            )}
+          </div>
+        )}
+      </div>
+    </nav>
   );
 };
 

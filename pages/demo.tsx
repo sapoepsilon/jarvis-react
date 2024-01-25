@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import MicrophoneButton from "../components/DemoPage/MicrophoneButton";
-import SendButton from "../components/DemoPage/SendButton";
 import "tailwindcss/tailwind.css";
 import ScrollableView from "@/components/DemoPage/ScrollableView";
 import chatGPT from "./api/chatGPT";
@@ -9,7 +7,7 @@ import { MessageInterface } from "@/interfaces/Message";
 import { generateDeviceFingerprint } from "@/hooks/fingerprint";
 import { Fingerprint } from "@/interfaces/FingerprintModel";
 import FingerprintService from "@/pages/api/fingerprint_service";
-import Navbar from "@/components/navbar/NavBar";  
+import Navbar from "@/components/navbar/NavBar";
 import AlertDialog from "@/components/Alert";
 
 const Home: React.FC = () => {
@@ -72,7 +70,7 @@ const Home: React.FC = () => {
       }
     } else {
       alert(
-        "SpeechRecognition is not supported in this browser. Please use Chrome or Safari."
+        "SpeechRecognition is not supported in this browser. Please use Chrome or Safari.",
       );
       console.error("SpeechRecognition is not supported in this browser.");
       setIsSupported(false);
@@ -129,7 +127,7 @@ const Home: React.FC = () => {
       const userMessage: MessageInterface = createMessage(
         transcript,
         true,
-        false
+        false,
       );
       // @ts-ignore
       console.log(
@@ -138,11 +136,10 @@ const Home: React.FC = () => {
           " fingerprint date: " +
           fingerprintDate?.getDay() +
           " today: " +
-          today.getDay()
+          today.getDay(),
       );
 
       if (fingerprint != null) {
-
         handleSubmit(userMessage);
       }
     }
@@ -157,7 +154,7 @@ const Home: React.FC = () => {
     const placeholder: MessageInterface = createMessage(
       "Thinking",
       false,
-      false
+      false,
     );
     setMessages((prevMessages) => [...prevMessages, placeholder]);
     // @ts-ignore
@@ -167,7 +164,7 @@ const Home: React.FC = () => {
       // @ts-ignore
       gptResponse,
       false,
-      false
+      false,
     );
     removeLastMessage();
     setMessages((prevMessages) => [...prevMessages, gptMessage]);
@@ -185,7 +182,7 @@ const Home: React.FC = () => {
           .addDateToFingerprint(
             fingerprintValue,
             today,
-            fingerprint!.values + 1
+            fingerprint!.values + 1,
           )
           .then((r) => console.log(r));
         const updateFingerprint: Fingerprint = {
@@ -212,7 +209,7 @@ const Home: React.FC = () => {
   function createMessage(
     text: string,
     isMe: boolean,
-    isInterim: boolean
+    isInterim: boolean,
   ): MessageInterface {
     return {
       text,
@@ -234,8 +231,15 @@ const Home: React.FC = () => {
     <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
       <Navbar />
       {isAlert && (
-   <AlertDialog header="Call this number" phoneNumber={"8016350784"} onYes={handleConfirm } onNo={handleCancel} backgroundColor={"bg-app-background"}></AlertDialog>)}
-        
+        <AlertDialog
+          header="Call this number"
+          phoneNumber={"8016350784"}
+          onYes={handleConfirm}
+          onNo={handleCancel}
+          backgroundColor={"bg-app-background"}
+        ></AlertDialog>
+      )}
+
       <ScrollableView>
         <div className="w-full mb-5">
           <MessageList messages={messages} interimTranscript={transcript} />
