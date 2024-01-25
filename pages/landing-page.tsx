@@ -1,4 +1,5 @@
 import Navbar from "@/components/navbar/NavBar";
+
 import React, { useEffect, useState } from "react";
 import Logo from "../public/logo-svg.svg";
 import Calendar from "../public/calendar.svg";
@@ -13,7 +14,6 @@ import { useRouter } from "next/router";
 const LandingPage: React.FC = () => {
   const router = useRouter();
   const handleExploreClick = () => {
-    // Use smooth scrolling to scroll to the target section
     document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
   };
   const [isInView, setIsInView] = useState(false);
@@ -130,7 +130,6 @@ const LandingPage: React.FC = () => {
         {" "}
         {/* Support Section Content */}
       </section>
-
       <div
         id="targetSection"
         className="pt-6 flex items-center justify-center "
