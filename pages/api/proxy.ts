@@ -11,7 +11,7 @@ export default async function handler(
     // Forwarding the request to the external API
     const serverResponse = await fetch(externalApiUrl, {
       method: "POST",
-      //@ts-ignore
+      // @ts-expect-error I haven't fixed it yet
       headers: req.headers,
       body: req.body,
     });

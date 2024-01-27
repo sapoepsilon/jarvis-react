@@ -49,10 +49,9 @@ async function playAudioFromText(
 
     mediaSource.onsourceopen = () => {
       const sourceBuffer = mediaSource.addSourceBuffer("audio/mpeg"); // adjust MIME type as needed
-      //@ts-ignore
-      const reader = response.body.getReader();
+      const reader = response.body?.getReader();
       const read = () => {
-        reader.read().then(({ done, value }) => {
+        reader?.read().then(({ done, value }) => {
           if (done) {
             mediaSource.endOfStream();
             return;
@@ -62,7 +61,7 @@ async function playAudioFromText(
           }
         });
       };
-
+      
       sourceBuffer.addEventListener("updateend", read);
       read(); // Start reading
     };

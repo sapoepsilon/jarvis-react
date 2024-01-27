@@ -4,10 +4,6 @@ import {
   Fingerprint,
   FingerprintDocument,
 } from "@/interfaces/FingerprintModel";
-import { doc, setDoc } from "firebase/firestore";
-import { set } from "@firebase/database";
-import { util } from "protobufjs";
-import merge = util.merge;
 import firebase_db from "@/pages/api/.example.firebase";
 
 class FingerprintService {
@@ -16,14 +12,13 @@ class FingerprintService {
     date: Date,
     value: number,
   ): Promise<void> {
-    const dateString = date.toISOString().split("T")[0]; // Convert the date to a string in the format 'YYYY-MM-DD'
     console.log("from fingerprints");
-    let fingerprintValue: Fingerprint = {
+    const fingerprintValue: Fingerprint = {
       fingerprint,
       date: date,
       values: value,
     };
-    let fingerprintCollectionName: string = fingerprintValue.fingerprint;
+    const fingerprintCollectionName: string = fingerprintValue.fingerprint;
 
     const fingerprintsRef = firebase_db
       .collection(`fingerprints`)

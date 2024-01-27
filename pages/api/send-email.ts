@@ -4,7 +4,7 @@ import nodemailer from 'nodemailer';
 export default async function handler(req: Request, res: Response) {
     if (req.method === 'POST') {
         const { fullName, email, message } = req.body;
-        let transporter = nodemailer.createTransport({
+        const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 587,
             secure: false, // true for 465, false for other ports
@@ -13,7 +13,7 @@ export default async function handler(req: Request, res: Response) {
                 pass: process.env.CHATGENIE_PASSWORD,
             },
         });
-        let mailOptions = {
+        const mailOptions = {
             from: 'chatgenieaiassistant@gmail.com',
             to: 'chatgenieaiassistant@gmail.com',
             subject: `New message from ${fullName}`,

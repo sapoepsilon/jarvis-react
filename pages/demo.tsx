@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "tailwindcss/tailwind.css";
 import ScrollableView from "@/components/DemoPage/ScrollableView";
-import chatGPT from "./api/chatGPT";
 import MessageList from "@/components/DemoPage/MessageList";
 import { MessageInterface } from "@/interfaces/Message";
 import { generateDeviceFingerprint } from "@/hooks/fingerprint";
@@ -11,102 +10,16 @@ import Navbar from "@/components/navbar/NavBar";
 import AlertDialog from "@/components/Alert";
 
 const Home: React.FC = () => {
-  const [isListening, setIsListening] = useState<boolean>(false);
   const [isAlert, setIsAlert] = useState(true);
-  const handleTranscriptUpdate = (newTranscript: string) => {
-    setTranscript(newTranscript ?? "");
-    //@ts-ignore
-    handleSendClick(newTranscript);
-  };
 
   const [transcript, setTranscript] = useState<string>("");
   const [messages, setMessages] = useState<MessageInterface[]>([]);
-  const [isSupported, setIsSupported] = useState<boolean>(true);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  // const value = useMicrophoneVolume();
   const fingerprintService = new FingerprintService();
   const [fingerprint, setFingerprint] = useState<Fingerprint | null>(null);
   const [isRecognitionDone, setRecognitionDone] = useState(false);
-  const [sendTime, setSendTime] = useState<Date | null>(null);
   const today: Date = new Date();
 
-  useEffect(() => {
-    const SpeechRecognition =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      recognitionRef.current = new SpeechRecognition();
-
-      if (recognitionRef.current) {
-        recognitionRef.current.continuous = true;
-        recognitionRef.current.interimResults = false;
-
-        let interimTranscript = "";
-        let eachTranscript = "";
-        recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
-          setRecognitionDone(true);
-
-          for (let i = event.resultIndex; i < event.results.length; i++) {
-            const transcript = event.results[i][0].transcript;
-            if (!event.results[i].isFinal) {
-              eachTranscript += transcript;
-              setTranscript(interimTranscript + eachTranscript);
-              console.log("trascript is set in is Final else");
-            } else {
-              interimTranscript += transcript;
-              setTranscript(interimTranscript);
-              console.log("ELSE");
-            }
-          }
-          eachTranscript = "";
-        };
-        recognitionRef.current.onend = () => {
-          console.log("recognition ended");
-          setIsListening(false);
-          setTranscript(interimTranscript);
-        };
-      } else {
-        alert("Error initializing");
-      }
-    } else {
-      alert(
-        "SpeechRecognition is not supported in this browser. Please use Chrome or Safari.",
-      );
-      console.error("SpeechRecognition is not supported in this browser.");
-      setIsSupported(false);
-    }
-
-    const fetchRequestAmount = async () => {
-      let r;
-      generateDeviceFingerprint().then(async (fingerprint: string) => {
-        r = await fingerprintService.fetchFingerprintData(fingerprint);
-        if (r != null || r != undefined) {
-          const timestampInMilliseconds =
-            r.fingerprintValue.date.seconds * 1000 +
-            r.fingerprintValue.date.nanoseconds / 1000000;
-          const date = new Date(timestampInMilliseconds);
-          const fingerprint: Fingerprint = {
-            fingerprint: r.fingerprintValue.fingerprint,
-            date: date,
-            values: r.fingerprintValue.values,
-          };
-          setFingerprint(fingerprint);
-        }
-      });
-    };
-    fetchRequestAmount();
-    return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-    };
-  }, []);
-
-  const handleClearClick = () => {
-    setTranscript("");
-    console.log("transcript cleared" + transcript);
-    setTranscript("");
-  };
 
   const playSound = () => {
     const audio = new Audio("/bell.wav");
@@ -117,12 +30,11 @@ const Home: React.FC = () => {
     if (
       transcript != "Recognizing your voice..." &&
       transcript != "" &&
-      // @ts-ignore
       fingerprint?.values < 5
     ) {
       playSound();
     }
-    let fingerprintDate = fingerprint?.date ? fingerprint.date : null;
+    const fingerprintDate = fingerprint?.date ? fingerprint.date : null;
     if (transcript.trim()) {
       const userMessage: MessageInterface = createMessage(
         transcript,

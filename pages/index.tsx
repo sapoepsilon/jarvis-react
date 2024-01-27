@@ -4,8 +4,6 @@ import Image from "next/image";
 import Sparkles from "../public/sparkles.svg";
 import Features from "@/components/FeaturesSection";
 import HomeSection from "@/components/HomeSestion";
-import NavBar from "@/components/navbar/NavBar";
-import PulsatingBackground from "@/components/pulsating/PulsatingBackground";
 
 const LandingPage: React.FC = () => {
   const [showNavbar, setShowNavbar] = useState<boolean>(true);
