@@ -16,7 +16,7 @@ const ContactForm: React.FC<ContactFormProps> = ({onSuccessfulSubmit}) => {
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        let newErrors = {fullName: '', email: ''};
+        const newErrors = {fullName: '', email: ''};
         let isValid = true;
 
         if (!fullName) {

@@ -1,20 +1,26 @@
-async function playAudioFromText(text: string, voice: string = "alloy", sendClickTime: Date): Promise<void> {
+async function playAudioFromText(
+  text: string,
+  voice: string = "alloy",
+  sendClickTime: Date,
+): Promise<void> {
   const requestStartTime = new Date();
   console.log(`Request start time: ${requestStartTime.toISOString()}`);
 
   try {
     const fetchStartTime = new Date();
-    const response = await fetch('/api/tts', {
-      method: 'POST',
+    const response = await fetch("/api/tts", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ input: text, voice })
+      body: JSON.stringify({ input: text, voice }),
     });
     const fetchEndTime = new Date();
     console.log(`Fetch start time: ${fetchStartTime.toISOString()}`);
     console.log(`Fetch end time: ${fetchEndTime.toISOString()}`);
-    console.log(`Fetch duration: ${fetchEndTime.getTime() - fetchStartTime.getTime()}ms`);
+    console.log(
+      `Fetch duration: ${fetchEndTime.getTime() - fetchStartTime.getTime()}ms`,
+    );
 
     if (!response.ok) {
       throw new Error(`Error from server: ${response.status}`);
@@ -26,23 +32,26 @@ async function playAudioFromText(text: string, voice: string = "alloy", sendClic
     }
 
     const mediaSource = new MediaSource();
-    const audio = document.createElement('audio');
+    const audio = document.createElement("audio");
     audio.src = URL.createObjectURL(mediaSource);
 
     // Log when audio starts playing
-    audio.addEventListener('play', () => {
-      console.log(`Audio playback started at: ${new Date().getTime() - requestStartTime.getTime()}ms`);
-      console.log(`Send click time: ${new Date().getTime() - sendClickTime.getTime()}ms`);
+    audio.addEventListener("play", () => {
+      console.log(
+        `Audio playback started at: ${new Date().getTime() - requestStartTime.getTime()}ms`,
+      );
+      console.log(
+        `Send click time: ${new Date().getTime() - sendClickTime.getTime()}ms`,
+      );
     });
 
-    audio.play().catch(e => console.error('Error playing audio:', e));
+    audio.play().catch((e) => console.error("Error playing audio:", e));
 
     mediaSource.onsourceopen = () => {
-      const sourceBuffer = mediaSource.addSourceBuffer('audio/mpeg'); // adjust MIME type as needed
-//@ts-ignore
-      const reader = response.body.getReader();
+      const sourceBuffer = mediaSource.addSourceBuffer("audio/mpeg"); // adjust MIME type as needed
+      const reader = response.body?.getReader();
       const read = () => {
-        reader.read().then(({ done, value }) => {
+        reader?.read().then(({ done, value }) => {
           if (done) {
             mediaSource.endOfStream();
             return;
@@ -52,8 +61,8 @@ async function playAudioFromText(text: string, voice: string = "alloy", sendClic
           }
         });
       };
-
-      sourceBuffer.addEventListener('updateend', read);
+      
+      sourceBuffer.addEventListener("updateend", read);
       read(); // Start reading
     };
   } catch (error) {

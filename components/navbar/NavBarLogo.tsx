@@ -8,10 +8,10 @@ const Logo = () => {
   return (
     <div
       onClick={() => router.push("/")}
-      className="flex items-center py-4 px-2 cursor-pointer"
+      className="flex items-center py-4 px-2 cursor-pointer hover:opacity-50"
     >
       <Image src={logo} alt="Logo" width={50} height={50} />
-      <span className="font-semibold text-white ml-3 text-lg">ChatGeanie</span>
+      <span className="font-semibold text-white ml-3 text-lg">Chat genie</span>
     </div>
   );
 };
