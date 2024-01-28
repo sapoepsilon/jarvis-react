@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { FaBars } from 'react-icons/fa';
-import { scrollToSection } from "@/utils/scrollToSection";
 import { renderNavbarItems } from "./renderNavbarItems";
-import Logo from "./navBarLogo";
-import NavbarItem from "./navBarItem";
-import JarvisButton from "./loginButtonNavBar";
+import Logo from "./NavBarLogo";
+import NavbarItem from "./NavBarItem";
+import JarvisButton from "./JarvisButton";
+import { scrollToSection } from "../../utils/scrollToSection";
 
 type NavbarProps = {
   className?: string;

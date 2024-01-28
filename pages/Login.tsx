@@ -1,6 +1,6 @@
 import { useState, FormEvent } from "react";
 import supabase from "@/hooks/supabaseClient";
-import NavBar from "@/components/navbar/navBar";
+import NavBar from "@/components/navbar/NavBar";
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState<string>("");

@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import Image from "next/image";
-import logo from "../../public/logo-svg.svg"; // Make sure the path is correct
+import logo from "../../public/logo-svg.svg";
+import React from "react";
 
 const Logo = () => {
   const router = useRouter();

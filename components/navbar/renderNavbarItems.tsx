@@ -1,6 +1,6 @@
 import React from 'react';
-import { scrollToSection } from '@/utils/scrollToSection';
-import NavbarItem from './navBarItem';
+import NavbarItem from './NavBarItem';
+import { scrollToSection } from '../../utils/scrollToSection';
 
 export const renderNavbarItems = (items: string[], activeSection: string) => {
   return items.map((item, index) => (

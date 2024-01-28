@@ -1,9 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import router from "next/router";
+import JarvisButton from "./navbar/JarvisButton";
+import PulsatingBackground from "./pulsating/PulsatingBackground";
 import Logo from "../public/logo-svg.svg";
-import PulsatingBackground from "@/components/pulsating/PulsatingBackground";
-import JarvisButton from "./navbar/loginButtonNavBar";
 
 const HomeSection: React.FC = () => {
   const handleExploreClick = () => {

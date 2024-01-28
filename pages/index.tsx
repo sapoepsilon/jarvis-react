@@ -1,10 +1,9 @@
-import Navbar from "@/components/navbar/navBar";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import Navbar from "../components/navbar/NavBar";
+import HomeSection from "../components/HomeSestion";
+import Features from "../components/FeaturesSection";
 import Sparkles from "../public/sparkles.svg";
-import Features from "@/components/FeaturesSection";
-import HomeSection from "@/components/HomeSestion";
-
 const LandingPage: React.FC = () => {
   const [showNavbar, setShowNavbar] = useState<boolean>(true);
   let lastScrollY = 0;
