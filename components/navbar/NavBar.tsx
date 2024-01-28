@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from "react";
-import Logo from "@/components/navbar/NavBarLogo";
-import LoginButton from "@/components/navbar/LoginButtonNavBar";
-import NavbarItem from "@/components/navbar/NavBarItem";
 import { useRouter } from "next/router";
 import { FaBars } from 'react-icons/fa';
+import { scrollToSection } from "@/utils/scrollToSection";
+import { renderNavbarItems } from "./renderNavbarItems";
+import Logo from "./navBarLogo";
+import NavbarItem from "./navBarItem";
+import JarvisButton from "./loginButtonNavBar";
 
 type NavbarProps = {
   className?: string;
+  isNavbarExpanded?: boolean;
+  setIsNavbarExpanded?: (value: boolean) => void;
 };
 
-const Navbar: React.FC<NavbarProps> = ({ className }) => {
+const Navbar: React.FC<NavbarProps> = ({ className, isNavbarExpanded, setIsNavbarExpanded }) => {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState<string>("");
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
 
   const defaultStyle = {
     background: "linear-gradient(to right, #3498db, #8e44ad)",
@@ -45,7 +48,6 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
 
     const handleScroll = () => {
       const sections = ["home", "features", "services", "pricing", "support"];
-
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
@@ -65,54 +67,31 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
     };
   }, []);
 
-  const scrollToSection = (sectionId: string) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <nav
       className={`md:${className} lg:${className} shadow-lg sticky top-0 z-50 bg-opacity-5 backdrop-blur-md bg-gray-100 bg-clip-padding backdrop-filter overflow-hidden ${isNavbarExpanded ? 'h-auto' : 'h-50px'}`}
-      style={{ ...gradientStyle }} 
-      onMouseMove={handleMouseMove} // Add mouse move event handler
+      style={{ ...gradientStyle }}
+      onMouseMove={handleMouseMove}
     >
       <div
         className="flex flex-col md:flex-row justify-between w-screen px-4"
       >
-        <div className="flex justify-start md:justify-between items-center w-full px-10">
+        <div className="flex justify-start md:justify-between sm:justify-between items-center w-full px-10">
           <div className="flex space-x-7 items-center">
             <button
-              className="md:hidden"
+              className="md:hidden text-white hover:opacity-50"
               onClick={() => setIsNavbarExpanded(!isNavbarExpanded)}
             >
-                      <FaBars />
-
+              <FaBars />
             </button>
             <Logo />
           </div>
-          <div className={`flex flex-col items-center space-y-1 mx-auto ${isNavbarExpanded ? 'block' : 'hidden'}`}>
-            {["Home", "Features", "Services", "Pricing", "Support"].map(
-              (item, index) => (
-                <button
-                  key={index}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection(item.toLowerCase());
-                  }}
-                >
-                  <NavbarItem
-                    title={item}
-                    isActive={activeSection === item.toLowerCase()}
-                  />
-                </button>
-              ),
-            )}
+          <div className={`${isNavbarExpanded ? 'hidden ' : 'sm: hidden lg:block md:block'} mt-4 sm:mt-0`}>
+            {renderNavbarItems(["Home", "Features", "Services", "Pricing", "Support"], activeSection)}
           </div>
           <div className="hidden md:flex items-center space-x-3">
-            <LoginButton text="Demo" />
-            <LoginButton text="Login" onClick={() => router.push("/Login")} />
+            <JarvisButton text="Demo" onClick={() => router.push("/Demo")} />
+            <JarvisButton text="Login" onClick={() => router.push("/Login")} />
           </div>
           {isDropdownOpen && isMobile && (
             <div className="absolute w-full bg-white shadow-md md:hidden">

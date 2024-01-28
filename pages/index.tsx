@@ -1,4 +1,4 @@
-import Navbar from "@/components/navbar/NavBar";
+import Navbar from "@/components/navbar/navBar";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Sparkles from "../public/sparkles.svg";
@@ -21,7 +21,15 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full bg-black flex flex-col items-center relative">
-      <Navbar className={showNavbar ? "navbar-shown" : "navbar-hidden"} />
+      <Navbar className={showNavbar ? "navbar-shown" : "navbar-hidden"} isNavbarExpanded={showNavbar} setIsNavbarExpanded={setShowNavbar} />
+      <div id="mobile-navbar" className={`${showNavbar ? 'flex flex-col bg-transparent opacity-100 translate-y-0 w-screen pl-12 pt-2' : 'hidden opacity-0 translate-y-5'} z-50 transition-all duration-300 ease-in-out`}>
+        <p className="text-white text-lg text-left">Home</p>
+        <p className="text-white text-lg text-left">Features</p>
+        <p className="text-white text-lg text-left">Services</p>
+        <p className="text-white text-lg text-left">Pricing</p>
+        <p className="text-white text-lg text-left">Support</p>
+      </div>
+
       <HomeSection />
       <Features />
       <section id="services" className="h-auto w-auto"></section>

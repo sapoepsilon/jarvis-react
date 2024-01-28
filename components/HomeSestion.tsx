@@ -1,9 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import router from "next/router";
-import LoginButton from "./navbar/LoginButtonNavBar";
 import Logo from "../public/logo-svg.svg";
 import PulsatingBackground from "@/components/pulsating/PulsatingBackground";
+import JarvisButton from "./navbar/loginButtonNavBar";
 
 const HomeSection: React.FC = () => {
   const handleExploreClick = () => {
@@ -23,22 +23,22 @@ const HomeSection: React.FC = () => {
             Automate scheduling of your business
           </p>
           <p className="font-inter font-interRegular text-2xl pt-6 text-center text-white">
-            <span className="bg-accent-purple bg-opacity-25 rounded p-2">
+            <span className=" bg-opacity-25 rounded p-2">
               Handle bureaucratic nature of doing small business, and help
               customer facing side of business AI
             </span>
           </p>
         </div>
         <div className="mt-10 space-x-2 mb-10">
-          <LoginButton
+          <JarvisButton
             textSize="xl"
             text="Explore"
             onClick={handleExploreClick}
           />
-          <LoginButton
+          <JarvisButton
             textSize="xl"
             text="Demo"
-            onClick={() => router.push("/demo")}
+            onClick={() => router.push("/Demo")}
           />
         </div>
       </div>

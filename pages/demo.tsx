@@ -44,11 +44,11 @@ const Home: React.FC = () => {
       // @ts-ignore
       console.log(
         "fingerprint values: " +
-          fingerprint?.values +
-          " fingerprint date: " +
-          fingerprintDate?.getDay() +
-          " today: " +
-          today.getDay(),
+        fingerprint?.values +
+        " fingerprint date: " +
+        fingerprintDate?.getDay() +
+        " today: " +
+        today.getDay(),
       );
 
       if (fingerprint != null) {

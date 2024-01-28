@@ -1,4 +1,4 @@
-import Navbar from "@/components/navbar/NavBar";
+import Navbar from "@/components/navbar/navBar";
 
 import React, { useEffect, useState } from "react";
 import Logo from "../public/logo-svg.svg";
@@ -7,7 +7,7 @@ import Dashboard from "../public/dashboard.svg";
 import Voice from "../public/voice.svg";
 import Image from "next/image";
 import Sparkles from "../public/sparkles.svg";
-import LoginButton from "@/components/navbar/LoginButtonNavBar";
+import JarvisButton from "@/components/navbar/loginButtonNavBar";
 import RotatingLogo from "@/components/RotatingLogo";
 import { useRouter } from "next/router";
 
@@ -50,12 +50,12 @@ const LandingPage: React.FC = () => {
             </p>
           </div>
           <div className="mt-10 space-x-2 mb-10">
-            <LoginButton
+            <JarvisButton
               textSize="xl"
               text="Explore"
               onClick={handleExploreClick}
             />
-            <LoginButton
+            <JarvisButton
               textSize="xl"
               text="Demo"
               onClick={() => router.push("./pages/index.tsx")}
@@ -79,9 +79,8 @@ const LandingPage: React.FC = () => {
             {/* Large Text Behind */}
             {/* <p className="absolute  text-center text-6xl w-full font-bold text-white opacity-40 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"> */}
             <p
-              className={`absolute text-center text-6xl w-full font-bold text-white opacity-80 top-1/2 left-1/2 transform -translate-x-1/2 ${
-                isInView ? "-translate-y-80" : "-translate-y-1/2"
-              } transition-all duration-700 ease-in-out`}
+              className={`absolute text-center text-6xl w-full font-bold text-white opacity-80 top-1/2 left-1/2 transform -translate-x-1/2 ${isInView ? "-translate-y-80" : "-translate-y-1/2"
+                } transition-all duration-700 ease-in-out`}
             >
               Manage your clientbase with Chat genie
             </p>
