@@ -19,10 +19,10 @@ const HomeSection: React.FC = () => {
       <div className="flex flex-grow flex-col w-full min-h-screen items-center justify-center z-10 rounded-b-[40px] ">
         <Image src={Logo} alt="Logo" width={50} height={50} />
         <div className="w-1/2">
-          <p className="font-inter font-interBold lg:text-6xl sm:text-lg mt-6 mb-2 text-center bg-gradient-to-r from-blue-500 via-white to-accent-purple text-transparent bg-clip-text">
+          <p className="font-inter font-interBold  sm: text-4xl lg:text-6xl sm:text-lg mt-6 mb-2 text-center bg-gradient-to-r from-blue-500 via-white to-accent-purple text-transparent bg-clip-text">
             Automate scheduling of your business
           </p>
-          <p className="font-inter font-interRegular text-2xl pt-6 text-center text-white">
+          <p className="font-inter font-interRegular text-4xl pt-6 text-center text-white">
             <span className=" bg-opacity-25 rounded p-2">
               Handle bureaucratic nature of doing small business, and help
               customer facing side of business AI
