@@ -73,7 +73,6 @@ const Features: React.FC = () => {
     <section id="features" className="h-screen w-full bg-black">
       <div className="flex flex-grow flex-col w-full items-center pt-20 mt-20 px-10 bg-opacity-0 rounded-b-[40px] bg-transparent">
         <div className="flex flex-col items-center justify-center sm:mb-20 md:mb-20 lg:mb-30 bg-transparent">
-          <Image src={Sparkles} alt="Sparkles" width={100} height={100} />
           <div ref={ref} id="animatedTextSection" className="relative bg-transparent">
             <p className={`font-inter font-interRegular text-2xl mt-6 text-center text-white ${getAnimationClass()}`}>
               Shape your success with our AI-powered tool, customize it to fit seamlessly into your business vision.
