@@ -90,7 +90,7 @@ const Navbar: React.FC<NavbarProps> = ({ className, isNavbarExpanded, setIsNavba
             {renderNavbarItems(["Home", "Features", "Services", "Pricing", "Support"], activeSection)}
           </div>
           <div className="hidden md:flex items-center space-x-3">
-            <JarvisButton text="Demo" onClick={() => router.push("/Demo")} />
+            <JarvisButton text="Demo" onClick={() => router.push("/demo")} />
             <JarvisButton text="Login" onClick={() => router.push("/Login")} />
           </div>
           {isDropdownOpen && isMobile && (

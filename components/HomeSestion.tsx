@@ -38,7 +38,7 @@ const HomeSection: React.FC = () => {
           <JarvisButton
             textSize="xl"
             text="Demo"
-            onClick={() => router.push("/Demo")}
+            onClick={() => router.push("/demo")}
           />
         </div>
       </div>
