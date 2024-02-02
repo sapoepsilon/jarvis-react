@@ -23,6 +23,6 @@ export class VIUSAssistant {
   }
 
   static marcella(): IVIUSAssistant {
-    return { name: 'Marcella Club', code: 'Marcella' };
+    return { name: 'Marcella Club', code: process.env.NEXT_PUBLIC_MARCELLA as string };
   }
 }
