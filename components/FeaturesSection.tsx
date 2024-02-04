@@ -3,7 +3,6 @@ import Image, { StaticImageData } from 'next/image';
 import Calendar from "../public/calendar.svg";
 import Dashboard from "../public/dashboard.svg";
 import Voice from "../public/voice.svg";
-import Sparkles from "../public/sparkles.svg";
 
 const FeatureCard: React.FC<{ image: StaticImageData; alt: string; text: string }> = ({ image, alt, text }) => {
   const defaultStyle = {
