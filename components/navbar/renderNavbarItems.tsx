@@ -1,6 +1,6 @@
-import React from 'react';
-import NavbarItem from './NavBarItem';
-import { scrollToSection } from '../../utils/scrollToSection';
+import React from "react";
+import NavbarItem from "./NavBarItem";
+import { scrollToSection } from "../../utils/scrollToSection";
 
 export const renderNavbarItems = (items: string[], activeSection: string) => {
   return items.map((item, index) => (
@@ -18,4 +18,3 @@ export const renderNavbarItems = (items: string[], activeSection: string) => {
     </button>
   ));
 };
-

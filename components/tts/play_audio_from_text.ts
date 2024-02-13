@@ -61,7 +61,7 @@ async function playAudioFromText(
           }
         });
       };
-      
+
       sourceBuffer.addEventListener("updateend", read);
       read(); // Start reading
     };
