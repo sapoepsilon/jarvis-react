@@ -15,11 +15,11 @@ const Home: React.FC = () => {
   const [fingerprint, setFingerprint] = useState<Fingerprint | null>(null);
   const [isRecognitionDone, setRecognitionDone] = useState(false);
   const today: Date = new Date();
-// TODO: fix the dummy finction
-const setIsNavbarExpanded = (value: boolean) => {
-  // Implement the necessary functionality here
-  console.log("Navbar expanded state:", value);
-};
+  // TODO: fix the dummy finction
+  const setIsNavbarExpanded = (value: boolean) => {
+    // Implement the necessary functionality here
+    console.log("Navbar expanded state:", value);
+  };
 
   function handleConfirm() {
     setIsAlert(false);
@@ -27,9 +27,9 @@ const setIsNavbarExpanded = (value: boolean) => {
   function handleCancel() {
     setIsAlert(false);
   }
-    return (
-      <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
-        <Navbar setIsNavbarExpanded={setIsNavbarExpanded} />
+  return (
+    <div className="flex flex-col items-center min-h-screen bg-app-background min-w-200">
+      <Navbar setIsNavbarExpanded={setIsNavbarExpanded} />
       {isAlert && (
         <AlertDialog
           header="Call this number"

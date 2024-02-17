@@ -16,7 +16,7 @@ module.exports = {
         "linear-gradient-start": "#00045A",
         "linear-gradient-end": "#00022A",
         "accent-purple": "#3E44C2",
-        "chatgenieWhite": "#ffffff",
+        chatgenieWhite: "#ffffff",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -33,7 +33,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    "prettier",
-  ],
+  plugins: ["prettier"],
 };

@@ -10,7 +10,8 @@
     "type-check": "tsc --noEmit",
     "export": "next export",
     "predeploy": "npm run build && npm run export",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "fix": "eslint --fix ."
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",

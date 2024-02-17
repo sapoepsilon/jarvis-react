@@ -10,8 +10,10 @@ const LandingPage: React.FC = () => {
   let lastScrollY = 0;
 
   const handleScroll = () => {
-    setShowNavbar(window.scrollY < lastScrollY);
-    lastScrollY = window.scrollY;
+    const currentScrollY = window.scrollY;
+    setShowNavbar(currentScrollY < lastScrollY || currentScrollY === 0);
+    setIsMobileNavbarOpen(false)
+    lastScrollY = currentScrollY;
   };
 
   useEffect(() => {
@@ -19,17 +21,14 @@ const LandingPage: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+
   return (
     <div className="min-h-screen w-full bg-black flex flex-col items-center relative">
-      <Navbar className={showNavbar ? "navbar-shown" : "navbar-hidden"} isNavbarExpanded={isMobileNavbarOpen} setIsNavbarExpanded={setIsMobileNavbarOpen} />
-      <div id="mobile-navbar" className={`${isMobileNavbarOpen ? ' flex flex-col bg-transparent opacity-100 translate-y-0 w-screen pl-12 pt-2' : 'hidden opacity-0 translate-y-5'} z-50 transition-all duration-300 ease-in-out`}>
-        <p className="text-white text-lg text-left">Home</p>
-        <p className="text-white text-lg text-left">Features</p>
-        <p className="text-white text-lg text-left">Services</p>
-        <p className="text-white text-lg text-left">Pricing</p>
-        <p className="text-white text-lg text-left">Support</p>
-      </div>
-
+      <Navbar
+        showNavbar={showNavbar}
+        isNavbarExpanded={isMobileNavbarOpen}
+        setIsNavbarExpanded={setIsMobileNavbarOpen}
+      />
       <HomeSection />
       <Features />
       <section id="services" className="h-auto w-auto"></section>
