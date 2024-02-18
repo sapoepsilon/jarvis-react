@@ -4,6 +4,9 @@ import Navbar from "../components/navbar/NavBar";
 import HomeSection from "../components/HomeSestion";
 import Features from "../components/FeaturesSection";
 import Sparkles from "../public/sparkles.svg";
+import PricingSection from "@/components/PricingSection";
+import DemoSection from "@/components/DemoSection";
+import JoinWaitlistSection from "@/components/WaitlistSection";
 const LandingPage: React.FC = () => {
   const [showNavbar, setShowNavbar] = useState<boolean>(true);
   const [isMobileNavbarOpen, setIsMobileNavbarOpen] = useState<boolean>(false);
@@ -31,8 +34,9 @@ const LandingPage: React.FC = () => {
       />
       <HomeSection />
       <Features />
-      <section id="services" className="h-auto w-auto"></section>
-      <section id="pricing" className="h-screen w-auto"></section>
+      <DemoSection />
+      <JoinWaitlistSection />
+      <PricingSection />
       <section id="support" className="h-screen w-auto"></section>
       <div
         id="targetSection"

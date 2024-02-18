@@ -8,7 +8,8 @@ const FeatureCard: React.FC<{
   image: StaticImageData;
   alt: string;
   text: string;
-}> = ({ image, alt, text }) => {
+  description?: string;
+}> = ({ image, alt, text, description }) => {
   const defaultStyle = {
     background: "linear-gradient(to right, #3498db, #8e44ad)",
   };
@@ -30,14 +31,17 @@ const FeatureCard: React.FC<{
   return (
     <div
       id="gradientBox"
-      className="w-80 h-64 rounded-2xl border mb-5 border-black bg-opacity-80 hover:bg-opacity-50 backdrop-blur-md bg-clip-padding backdrop-filter overflow-hidden"
+      className="w-80 h-70 rounded-2xl border mb-5 border-black bg-opacity-80 hover:bg-opacity-50 backdrop-blur-md bg-clip-padding backdrop-filter overflow-hidden"
       style={gradientStyle}
       onMouseMove={handleMouseMove}
     >
-      <div className="m-4 flex flex-col items-center">
+      <div className="m-4 flex flex-col items-center h-full">
         <Image src={image} alt={alt} width={50} height={50} />
-        <p className="text-white  font-inter font-interRegular text-xl mt-4">
+        <p className="text-white font-inter font-interRegular text-xl mt-2 whitespace-normal overflow-hidden">
           {text}
+        </p>
+        <p className="text-white font-inter font-interRegular text-md mt-2 whitespace-normal overflow-hidden">
+          {description}
         </p>
       </div>
     </div>
@@ -75,8 +79,8 @@ const Features: React.FC = () => {
   };
 
   return (
-    <section id="features" className="h-screen w-full bg-black">
-      <div className="flex flex-grow flex-col w-full items-center pt-20 mt-20 px-10 bg-opacity-0 rounded-b-[40px] bg-transparent">
+    <section id="features" className="w-full bg-black ">
+      <div className="flex flex-grow flex-col w-full items-center  px-10 bg-opacity-0 rounded-b-[40px] bg-transparent">
         <div className="flex flex-col items-center justify-center sm:mb-20 md:mb-20 lg:mb-30 bg-transparent">
           <div
             ref={ref}
@@ -101,21 +105,24 @@ const Features: React.FC = () => {
           id="animatedTextSection"
           className="relative bg-transparent"
         >
-          <div className="flex  flex-col md:flex-row items-center justify-center space-x-0 md:space-x-10 bg-transparent">
+          <div className="px-3 flex  flex-col lg:flex-row items-center justify-center space-x-0 md:space-x-10 bg-transparent">
             <FeatureCard
               image={Calendar}
               alt="Calendar"
-              text="Empower Your Time: Delegate Scheduling, Elevate Success."
+              text="Empower Your Time: Seamless Scheduling Across Platforms"
+              description="Integrate ChatGenie with your existing calendar tools to effortlessly book and manage customer appointments. Say goodbye to double bookings and scheduling conflicts."
             />
             <FeatureCard
               image={Voice}
               alt="Voice"
               text="Effortlessly Manage Your Calls with AI: Smart, Simplified, Streamlined."
+              description="Utilize our AI-powered voice system for realistic, natural conversations. Handle customer calls with ease, offering a seamless and personalized experience."
             />
             <FeatureCard
               image={Dashboard}
               alt="Dashboard"
               text="Smart Dashboard: Revolutionizing Business Management with a Single Click."
+              description="Our smart dashboard gives you a comprehensive overview of your appointments, customer interactions, and more - all accessible with a click."
             />
           </div>
         </div>
