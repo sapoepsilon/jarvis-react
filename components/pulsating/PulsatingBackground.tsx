@@ -9,7 +9,7 @@ let camera: THREE.PerspectiveCamera;
 let renderer: THREE.WebGLRenderer;
 let grid: THREE.Points;
 let points: THREE.Vector3[] = [];
-let material: THREE.PointsMaterial; // Declare the material
+let material: THREE.PointsMaterial;
 
 const WavingGrid: React.FC<WavingGridProps> = ({ className }) => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -46,10 +46,10 @@ const WavingGrid: React.FC<WavingGridProps> = ({ className }) => {
 
     camera.position.z = 10;
 
-    const handleScroll = () => {
-      setScrollY(window.scrollY * 0.25);
-    };
-    window.addEventListener('scroll', handleScroll);
+    // const handleScroll = () => {
+    //   setScrollY(window.scrollY * 0.25);
+    // };
+    // window.addEventListener('scroll', handleScroll);
 
     const animate = () => {
       requestAnimationFrame(animate);
@@ -57,7 +57,7 @@ const WavingGrid: React.FC<WavingGridProps> = ({ className }) => {
     };
     animate();
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      // window.removeEventListener('scroll', handleScroll);
       mountRef.current?.removeChild(renderer.domElement);
     };
   }, []);

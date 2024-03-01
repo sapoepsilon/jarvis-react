@@ -66,32 +66,32 @@ const Navbar: React.FC<NavbarProps> = ({
             >
               <FaBars />
             </button>
-            <p className="text-white text-extrabold">ChatGenie</p>
+            <p className="text-white text-extrabold py-2">ChatGenie</p>
           </div>
           <div
             className={`${isNavbarExpanded ? "hidden " : "sm: hidden lg:block md:block"} mt-4 sm:mt-0`}
           >
             {isMobile && isNavbarExpanded ? null : renderNavbarItems(
-              ["Home", "Features", "Pricing", "Support"],
+              ["Home", "Features", "Demo", "Waitlist", "Pricing", "Support"],
               activeSection,
             )}
           </div>
           <div className="hidden md:flex items-center space-x-3 py-1 ">
-            <JarvisButton
+            {/* <JarvisButton
               text="Demo"
               onClick={() => {
-                // const section = document.getElementById("demo");
-                // if (section) {
-                //   section.scrollIntoView({ behavior: "smooth" });
-                // }
+                const section = document.getElementById("demo");
+                if (section) {
+                  section.scrollIntoView({ behavior: "smooth" });
+                }
               }}
-            />
+            /> */}
             {/* <JarvisButton text="Login" onClick={() => router.push("/Login")} /> */}
           </div>
         </div>
         {isDropdownOpen && isMobile && (
           <div className="absolute w-full bg-white shadow-md md:hidden">
-            {["Home", "Features", "Pricing", "Support"].map(
+            {["Home", "Features", "Demo", "Waitlist", "Pricing", "Support"].map(
               (item, index) => (
                 <button
                   key={index}
@@ -112,7 +112,7 @@ const Navbar: React.FC<NavbarProps> = ({
         {isMobile && isNavbarExpanded && (
           <div className="flex flex-col items-start pl-7">
             {renderNavbarItems(
-              ["Home", "Features", "Pricing", "Support"],
+              ["Home", "Features", "Demo", "Waitlist", "Pricing", "Support"],
               activeSection,
             )}
           </div>

@@ -31,7 +31,7 @@ const FeatureCard: React.FC<{
   return (
     <div
       id="gradientBox"
-      className="w-80 h-70 rounded-2xl border mb-5 border-black bg-opacity-80 hover:bg-opacity-50 backdrop-blur-md bg-clip-padding backdrop-filter overflow-hidden"
+      className="w-80 h-70 rounded-2xl border mb-5 mx-2 border-black bg-opacity-80 hover:bg-opacity-50 backdrop-blur-md bg-clip-padding backdrop-filter overflow-hidden"
       style={gradientStyle}
       onMouseMove={handleMouseMove}
     >
@@ -80,7 +80,7 @@ const Features: React.FC = () => {
 
   return (
     <section id="features" className="w-full bg-black ">
-      <div className="flex flex-grow flex-col w-full items-center  px-10 bg-opacity-0 rounded-b-[40px] bg-transparent">
+      <div className="flex flex-grow flex-col lg:h-screen w-full items-center  px-10 bg-opacity-0 rounded-b-[40px] bg-transparent">
         <div className="flex flex-col items-center justify-center sm:mb-20 md:mb-20 lg:mb-30 bg-transparent">
           <div
             ref={ref}
@@ -105,7 +105,7 @@ const Features: React.FC = () => {
           id="animatedTextSection"
           className="relative bg-transparent"
         >
-          <div className="px-3 flex  flex-col lg:flex-row items-center justify-center space-x-0 md:space-x-10 bg-transparent">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:space-y-0 items-center justify-center bg-transparent">
             <FeatureCard
               image={Calendar}
               alt="Calendar"

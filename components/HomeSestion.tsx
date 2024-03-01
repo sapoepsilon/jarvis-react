@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import router from "next/router";
 import JarvisButton from "./navbar/JarvisButton";
-import PulsatingBackground from "./pulsating/PulsatingBackground";
 import Logo from "../public/logo-svg.svg";
 
 const HomeSection: React.FC = () => {
@@ -16,7 +14,7 @@ const HomeSection: React.FC = () => {
       clearTimeout(movementTimeout);
       movementTimeout = setTimeout(() => {
         setIsCursorMoving(false);
-      }, 1000); // Hide background after 1 second of inactivity
+      }, 100); // Hide background after 1 second of inactivity
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -28,15 +26,15 @@ const HomeSection: React.FC = () => {
   }, []);
 
   const handleExploreClick = () => {
-    document.getElementById("join-waitlist")?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" });
   };
   return (
     <section
       id="home"
       className="bg-opacity-0 flex flex-grow flex-col min-h-screen w-full-mt-20"
     >
-      {isCursorMoving && <PulsatingBackground className="absolute inset-0 hidden md:block" />}
-      <div className="flex flex-grow flex-col w-full min-h-screen items-center justify-center z-10 rounded-b-[40px] ">
+      {/* {isCursorMoving && <PulsatingBackground className="absolute inset-0 hidden md:block" />} */}
+      <div className="flex flex-grow flex-col w-full min-h-screen items-center md:justify-center lg:justify-center z-10 rounded-b-[40px] ">
         <Image
           src={Logo}
           alt="Logo"
@@ -44,7 +42,7 @@ const HomeSection: React.FC = () => {
           height={50}
           className="hidden sm:block"
         />
-        <div className="w-1/2">
+        <div className="md:w-1/2 lg:w-1/2">
           <p className="font-inter font-interBold text-4xl mt-6 mb-2 text-center bg-gradient-to-r from-blue-500 via-white to-accent-purple text-transparent bg-clip-text">
             Automate Your Customer Scheduling with ChatGenie
           </p>
@@ -54,20 +52,22 @@ const HomeSection: React.FC = () => {
             </span>
           </p>
         </div>
-        <div className="mt-10 space-x-2 mb-10">
+        <div className="mt-60 space-x-2 mb-10 sm:mt-10">
+
           <JarvisButton
             textSize="xl"
             text="Join the waitlist"
             onClick={handleExploreClick}
           />
+
           <JarvisButton
             textSize="xl"
             text="Demo"
             onClick={() => {
-              // const section = document.getElementById("demo");
-              // if (section) {
-              // section.scrollIntoView({ behavior: "smooth" });
-              // }
+              const section = document.getElementById("demo");
+              if (section) {
+                section.scrollIntoView({ behavior: "smooth" });
+              }
             }}
           />
         </div>
