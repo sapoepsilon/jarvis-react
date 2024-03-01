@@ -45,29 +45,38 @@ const JoinWaitlistSection: React.FC = () => {
     };
 
     return (
-        <section id="join-waitlist" className="h-screen w-full bg-black flex items-center justify-center z-0">
-            <div className="flex flex-col items-center justify-center p-6">
-                <h2 className="text-2xl font-bold mb-4 text-white">Join Our Waitlist</h2>
-                <form onSubmit={handleJoinWaitlist} className="w-full max-w-sm">
-                    <input
-                        ref={inputRef}
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Enter your email"
-                        className="px-4 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                    <button
-                        type="submit"
-                        className="mt-4 px-4 py-2 bg-blue-500 text-white w-full rounded-md hover:bg-blue-600 focus:outline-none focus:ring-blue-500"
-                    >
-                        Join Waitlist
-                    </button>
-                </form>
-                {message && <p className="text-sm mt-2 text-white">{message}</p>}
-            </div>
-        </section>
+        <div id="waitlist" className="flex flex-col h-screen z-0">
+            {/* Header */}
+            <header className="w-full py-4 bg-black text-white flex justify-center">
+                <h2 className="text-4xl font-bold">Waitlist</h2>
+            </header>
+
+            {/* Form Section */}
+            <section className="flex-grow flex items-center justify-center bg-black">
+                <div className="w-full max-w-sm flex flex-col items-center justify-center p-6">
+                    <p className='text-white mb-4'>As we are continuing to improve our AI offerings, and working to make it production ready, we invite you to join our waitlist.</p>
+                    <form onSubmit={handleJoinWaitlist} className="w-full">
+                        <input
+                            ref={inputRef}
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Enter your email"
+                            className="px-4 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                        />
+                        <button
+                            type="submit"
+                            style={{ backgroundImage: 'linear-gradient(to right, #3498db, #8e44ad)' }}
+                            className="mt-4 px-4 py-2 text-white w-full rounded-md hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                        >
+                            Join Waitlist
+                        </button>
+                    </form>
+                    {message && <p className="text-sm mt-2 text-white">{message}</p>}
+                </div>
+            </section>
+        </div>
     );
 };
 
