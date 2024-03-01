@@ -39,16 +39,9 @@ const Navbar: React.FC<NavbarProps> = ({
     window.addEventListener("resize", checkIfMobile);
 
     const handleScroll = () => {
-      const sections = ["home", "features", "services", "pricing", "support"];
+      const sections = ["home", "features", "pricing", "support"];
       for (const section of sections) {
         const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-            setActiveSection(section);
-            break;
-          }
-        }
       }
     };
 
@@ -72,27 +65,33 @@ const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setIsNavbarExpanded(!isNavbarExpanded)}
             >
               <FaBars />
-              <p>
-                ChatGenie
-              </p>
             </button>
+            <p className="text-white text-extrabold">ChatGenie</p>
           </div>
           <div
             className={`${isNavbarExpanded ? "hidden " : "sm: hidden lg:block md:block"} mt-4 sm:mt-0`}
           >
             {isMobile && isNavbarExpanded ? null : renderNavbarItems(
-              ["Home", "Features", "Services", "Pricing", "Support"],
+              ["Home", "Features", "Pricing", "Support"],
               activeSection,
             )}
           </div>
           <div className="hidden md:flex items-center space-x-3 py-1 ">
-            <JarvisButton text="Demo" onClick={() => router.push("/demo")} />
-            <JarvisButton text="Login" onClick={() => router.push("/Login")} />
+            <JarvisButton
+              text="Demo"
+              onClick={() => {
+                // const section = document.getElementById("demo");
+                // if (section) {
+                //   section.scrollIntoView({ behavior: "smooth" });
+                // }
+              }}
+            />
+            {/* <JarvisButton text="Login" onClick={() => router.push("/Login")} /> */}
           </div>
         </div>
         {isDropdownOpen && isMobile && (
           <div className="absolute w-full bg-white shadow-md md:hidden">
-            {["Home", "Features", "Services", "Pricing", "Support"].map(
+            {["Home", "Features", "Pricing", "Support"].map(
               (item, index) => (
                 <button
                   key={index}
@@ -112,8 +111,8 @@ const Navbar: React.FC<NavbarProps> = ({
         )}
         {isMobile && isNavbarExpanded && (
           <div className="flex flex-col items-start pl-7">
-                        {renderNavbarItems(
-              ["Home", "Features", "Services", "Pricing", "Support"],
+            {renderNavbarItems(
+              ["Home", "Features", "Pricing", "Support"],
               activeSection,
             )}
           </div>

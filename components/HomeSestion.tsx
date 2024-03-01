@@ -7,7 +7,7 @@ import Logo from "../public/logo-svg.svg";
 
 const HomeSection: React.FC = () => {
   const [isCursorMoving, setIsCursorMoving] = useState(false);
-  
+
   useEffect(() => {
     let movementTimeout: NodeJS.Timeout;
 
@@ -28,9 +28,8 @@ const HomeSection: React.FC = () => {
   }, []);
 
   const handleExploreClick = () => {
-    document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById("join-waitlist")?.scrollIntoView({ behavior: "smooth" });
   };
-
   return (
     <section
       id="home"
@@ -46,26 +45,30 @@ const HomeSection: React.FC = () => {
           className="hidden sm:block"
         />
         <div className="w-1/2">
-          <p className="font-inter font-interBold sm: text-4xl lg:text-6xl sm:text-lg mt-6 mb-2 text-center bg-gradient-to-r from-blue-500 via-white to-accent-purple text-transparent bg-clip-text">
-            Automate Your Customer Scheduling
+          <p className="font-inter font-interBold text-4xl mt-6 mb-2 text-center bg-gradient-to-r from-blue-500 via-white to-accent-purple text-transparent bg-clip-text">
+            Automate Your Customer Scheduling with ChatGenie
           </p>
           <p className="font-inter font-interRegular text-4xl pt-6 text-center text-white">
             <span className="bg-opacity-25 rounded p-2">
-              Handle scheduling with AI: Effortlessly book customers through
-              calls, web, emails, and texts.
+              Effortlessly manage appointments across calls, web, emails, and texts with AI.
             </span>
           </p>
         </div>
         <div className="mt-10 space-x-2 mb-10">
           <JarvisButton
             textSize="xl"
-            text="Learn More"
+            text="Join the waitlist"
             onClick={handleExploreClick}
           />
           <JarvisButton
             textSize="xl"
             text="Demo"
-            onClick={() => router.push("/demo")}
+            onClick={() => {
+              // const section = document.getElementById("demo");
+              // if (section) {
+              // section.scrollIntoView({ behavior: "smooth" });
+              // }
+            }}
           />
         </div>
       </div>
