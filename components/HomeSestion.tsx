@@ -27,7 +27,8 @@ const HomeSection: React.FC = () => {
 
 
   const handleExploreClick = () => {
-    window.open('https://chatgenie-dashboard.vercel.app/', '_blank', 'noopener,noreferrer'); 
+    window.open('https://chatgenie-dashboard.vercel.app/', '_blank', 'noopener,noreferrer');
+  }
   return (
     <section
       id="home"
