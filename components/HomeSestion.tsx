@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import JarvisButton from "./navbar/JarvisButton";
 import Logo from "../public/logo-svg.svg";
+import { useRouter } from 'next/router';
 
 const HomeSection: React.FC = () => {
   const [isCursorMoving, setIsCursorMoving] = useState(false);
-
   useEffect(() => {
     let movementTimeout: NodeJS.Timeout;
 
@@ -25,9 +25,9 @@ const HomeSection: React.FC = () => {
     };
   }, []);
 
+
   const handleExploreClick = () => {
-    document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" });
-  };
+    window.open('https://chatgenie-dashboard.vercel.app/', '_blank', 'noopener,noreferrer'); 
   return (
     <section
       id="home"
@@ -56,7 +56,7 @@ const HomeSection: React.FC = () => {
 
           <JarvisButton
             textSize="xl"
-            text="Join the waitlist"
+            text="Start"
             onClick={handleExploreClick}
           />
 
